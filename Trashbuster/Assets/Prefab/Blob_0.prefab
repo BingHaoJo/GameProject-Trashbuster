@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3536814392465382892}
   - component: {fileID: 5746004410775304379}
   - component: {fileID: 9031827607015571744}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Blob_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,8 +186,9 @@ MonoBehaviour:
   groundCheck: {fileID: 3137522406494822289}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   groundCheckRadius: 0.2
+  vacuumGunController: {fileID: 833369756214321097}
 --- !u!1 &3017044650593012604
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6176315894658146599}
   - component: {fileID: 8475950713396381863}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: VacuumGunSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +289,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3137522406494822289}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +321,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1540144050008045511}
   - component: {fileID: 833369756214321097}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: VacuumGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +337,7 @@ Transform:
   m_GameObject: {fileID: 5721979352896726961}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.415, y: -0.31, z: 0}
+  m_LocalPosition: {x: 0, y: -0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

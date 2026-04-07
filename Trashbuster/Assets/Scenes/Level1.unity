@@ -665,7 +665,7 @@ GameObject:
   m_Component:
   - component: {fileID: 237232281}
   - component: {fileID: 237232280}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: City background_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1871,6 +1871,10 @@ PrefabInstance:
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Constraints
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514152135713663814, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_FlipX
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8514152135713663814, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_SortingOrder
