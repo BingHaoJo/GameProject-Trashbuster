@@ -180,8 +180,8 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b7b8df16b2235447b7a5f2635ef30d7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
-  walkSpeed: 5
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  walkSpeed: 10
   jumpForce: 10
   groundCheck: {fileID: 3137522406494822289}
   groundLayer:

@@ -1,11 +1,22 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+enum PlayerStates
+{
+    Idle,
+    Walking,
+    Jumping,
+    Falling,
+    ForcePushed
+}
+
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float walkSpeed = 10f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
@@ -13,9 +24,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private VacuumGunController vacuumGunController;
 
     private bool isGrounded;
+    private bool isIdle;
     private Rigidbody2D rb;
     private InputAction moveAction;
     private InputAction jumpAction;
+    private PlayerStates currentState = PlayerStates.Idle;
 
     void OnEnable()
     {
@@ -29,7 +42,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -38,19 +50,80 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Vector2 moveInput = moveAction.ReadValue<Vector2>();
-        // rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
-
+        
+        Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        if (moveInput.x != 0f && isIdle)
+        {
+            currentState = PlayerStates.Walking;
+            rb.linearVelocityX = moveInput.x * walkSpeed;
+        }
+        else if(moveInput.x == 0f && isIdle)
+        {
+            currentState = PlayerStates.Idle;
+            rb.linearVelocityX = 0f;
+            
+        }
 
         if (jumpAction.IsPressed() && isGrounded)
         {
-            rb.AddForce(Vector2.up * jumpForce);
+            StateFunction(PlayerStates.Jumping);
         }
+
+        if (rb.linearVelocityY < 0f && !isGrounded)
+        {
+            currentState = PlayerStates.Falling;
+        }
+
+
+        // Air horizontal control
+        if (currentState == PlayerStates.Jumping || currentState == PlayerStates.Falling || currentState == PlayerStates.ForcePushed)
+        {
+            if (moveInput.x != 0f)
+            {
+                rb.AddForce(new Vector2(moveInput.x * 3f, 0f), ForceMode2D.Force);
+                print("Air Control: " + moveInput.x);
+            }
+        }
+
+        // print("Current State: " + currentState);
     }
 
     private void FixedUpdate()
     {
+        isIdle = (currentState != PlayerStates.ForcePushed && currentState != PlayerStates.Jumping && currentState != PlayerStates.Falling) ? true : false;
+        
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        if (isGrounded && currentState == PlayerStates.Falling)
+        {
+            currentState = PlayerStates.Idle;
+        }
+        
+    }
+    private void StateManager()
+    {
+        
+    }
+    private void StateFunction(PlayerStates currentState)
+    {
+        switch (currentState)
+        {
+            case PlayerStates.Idle:
+                rb.linearVelocityX = 0f;
+                break;
+            case PlayerStates.Walking:
+                Vector2 moveInput = moveAction.ReadValue<Vector2>();
+                rb.linearVelocityX = moveInput.x * walkSpeed;
+                break;
+            case PlayerStates.Jumping:
+                rb.linearVelocityY = jumpForce;
+                break;
+            case PlayerStates.Falling:
+                // Gravity will handle falling
+                break;
+            case PlayerStates.ForcePushed:
+                // Force push logic handled in VacuumGunController
+                break;
+        }
     }
 
     void OnMousePositionUpdated(Vector2 mousePos)
@@ -70,9 +143,9 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {
-        Vector2 pushFromPlayer = (transform.position - transform.right * 0.5f).normalized;
-        rb.linearVelocity = Vector2.zero;
-        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
+        currentState = PlayerStates.ForcePushed;
+        rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
+        // rb.linearVelocity = pushDir * pushForce;
     }
 
     void OnDisable()

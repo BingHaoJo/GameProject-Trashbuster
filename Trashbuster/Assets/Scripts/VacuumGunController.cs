@@ -58,7 +58,6 @@ public class VacuumGunController : MonoBehaviour
             canPush = false;
             StartCoroutine(PushCooldown());
         }
-        Debug.Log(gunDir);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -84,7 +83,6 @@ public class VacuumGunController : MonoBehaviour
     private void OnTrashCollected(TrashBase trash)
     {
         // Object Pooling Trash
-        print("Trash collected - signal works!");
         trash.gameObject.SetActive(false);
         trashQueue.Enqueue(trash.gameObject);
     }

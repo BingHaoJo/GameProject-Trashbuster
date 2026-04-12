@@ -503,6 +503,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &887229794 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3137522406494822289, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+  m_PrefabInstance: {fileID: 7642577859834856308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1065591662
 GameObject:
   m_ObjectHideFlags: 0
@@ -3997,7 +4002,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b7b8df16b2235447b7a5f2635ef30d7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
 --- !u!1001 &1267308634
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4100,6 +4105,17 @@ Transform:
   - {fileID: 1065591663}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2028229592 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 833369756214321097, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+  m_PrefabInstance: {fileID: 7642577859834856308}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d08c78a7ad965a4eb6edefae222caed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VacuumGunController
 --- !u!1001 &5765968553146994682
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4171,7 +4187,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 833369756214321097, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: pushForce
-      value: -10
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 833369756214321097, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: vacuumForce
@@ -4227,7 +4243,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1562078940297707349, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1562078940297707349, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_TagString
@@ -4251,7 +4267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Mass
-      value: 0.08
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Constraints
@@ -4259,15 +4275,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_GravityScale
-      value: 0.9
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_LinearDamping
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_AngularDamping
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8514152135713663814, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_FlipX
@@ -4279,12 +4295,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: jumpForce
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: groundCheck
+      value: 
+      objectReference: {fileID: 887229794}
     - target: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}
+    - target: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: vacuumGunController
+      value: 
+      objectReference: {fileID: 2028229592}
     m_RemovedComponents:
     - {fileID: 5088260847501767405, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
     m_RemovedGameObjects: []

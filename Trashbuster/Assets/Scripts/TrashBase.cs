@@ -17,13 +17,6 @@ public class TrashBase : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ApplyVacuumForce(float vacuumForce, Vector2 forceDir)
