@@ -410,9 +410,9 @@
                     "name": "",
                     "id": "c4bb9fa8-55e3-46ef-bcf6-afe1e30bd937",
                     "path": "<Mouse>/middleButton",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Push",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -423,7 +423,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false

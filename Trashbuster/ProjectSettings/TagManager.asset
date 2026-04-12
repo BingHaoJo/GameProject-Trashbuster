@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Trash
   - VacuumGun
+  - Ground
   layers:
   - Default
   - TransparentFX

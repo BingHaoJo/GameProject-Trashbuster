@@ -5,30 +5,37 @@ using UnityEngine.InputSystem;
 public class VacuumGunController : MonoBehaviour
 {
     [SerializeField] float vacuumForce = 7f;
-    [SerializeField] float maxRaycastDist = 8f;
+    [SerializeField] float pushForce = -40f;
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
-
+    private PlayerController player;
     private GameObject[] trashObjects;
+    private Vector2 mousePos;
+    private Vector3 worldPos;
+    private Vector2 gunDir;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         mainCamera = Camera.main;
+
+        player = transform.parent.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {   
-        #region Gun look at mouse & signal emission
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector3 worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
-        Vector2 direction = (worldPos - transform.position).normalized;
-        mousePositionUpdated?.Invoke(worldPos); // signal emitted
-        float angleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // Get mouse position in world space
+        mousePos = Mouse.current.position.ReadValue();
+        worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
+        gunDir = (worldPos - transform.position).normalized;
+
+        // Rotate gun to look at mouse
+        float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
         // Debug.DrawLine(transform.position, worldPos, Color.red, Time.deltaTime);
-        #endregion
+
+        mousePositionUpdated?.Invoke(worldPos); // signal emitted
         
         // CheckRaycast();
 
@@ -36,12 +43,29 @@ public class VacuumGunController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        TrashBase trash = collision.GetComponent<TrashBase>();
+        Vector2 forceDir = ((Vector2)transform.position - (Vector2)collision.transform.position).normalized;
+
+        // Apply Vacuum Force on trash
         if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Suck").IsPressed())
         {
-            TrashBase trash = collision.GetComponent<TrashBase>();
-            Vector2 forceDir = ((Vector2)transform.position - (Vector2)collision.transform.position).normalized;
             trash.ApplyVacuumForce(vacuumForce, forceDir);
         }
+
+        // Apply Push Force on trash
+        if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Push").IsPressed())
+        {
+            trash.ApplyVacuumForce(-vacuumForce, forceDir);
+        }
+
+        // Apply Push Force off ground for air boost
+        if (collision.CompareTag("Ground") && InputSystem.actions.FindAction("Push").IsPressed())
+        {
+            Vector2 pushDir = (transform.position - player.transform.position).normalized;
+            player.ApplyPushForce(pushForce, pushDir);
+        }
+
+
     }
 
     // private void CheckRaycast()

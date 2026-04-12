@@ -4,7 +4,8 @@ enum TrashType
 {
     Plastic,
     Paper,
-    Metal
+    Metal,
+    Glass
 }
 
 public class TrashBase : MonoBehaviour
