@@ -4170,6 +4170,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 833369756214321097, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: pushForce
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 833369756214321097, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: vacuumForce
       value: 7
       objectReference: {fileID: 0}
@@ -4233,6 +4237,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 3536814392465382892, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4387450820038344513, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -4242,8 +4250,24 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_Mass
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_Constraints
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_GravityScale
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_LinearDamping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746004410775304379, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+      propertyPath: m_AngularDamping
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8514152135713663814, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
       propertyPath: m_FlipX

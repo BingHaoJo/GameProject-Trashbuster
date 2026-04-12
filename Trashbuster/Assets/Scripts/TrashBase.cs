@@ -17,6 +17,7 @@ public class TrashBase : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
     }
 
     // Update is called once per frame
@@ -29,13 +30,4 @@ public class TrashBase : MonoBehaviour
     {
         rb.AddForce(forceDir * vacuumForce, ForceMode2D.Force);
     }
-
-    // void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     if (other.CompareTag("VacuumGun"))
-    //     {
-    //         Vector2 forceDir = (transform.position - other.transform.position).normalized;
-    //         rb.AddForce(forceDir * 2f, ForceMode2D.Force);
-    //     }
-    // }
 }

@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
@@ -38,8 +38,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
-        rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+        // Vector2 moveInput = moveAction.ReadValue<Vector2>();
+        // rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
 
 
         if (jumpAction.IsPressed() && isGrounded)
@@ -70,7 +70,9 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {
-        rb.AddForce(pushDir * pushForce, ForceMode2D.Force);
+        Vector2 pushFromPlayer = (transform.position - transform.right * 0.5f).normalized;
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(new Vector2(1, 1), ForceMode2D.Impulse);
     }
 
     void OnDisable()

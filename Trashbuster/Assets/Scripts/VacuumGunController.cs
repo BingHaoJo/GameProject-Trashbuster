@@ -1,24 +1,39 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class VacuumGunController : MonoBehaviour
 {
     [SerializeField] float vacuumForce = 7f;
-    [SerializeField] float pushForce = -40f;
+    [SerializeField] float pushForce = -30f;
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
-    private GameObject[] trashObjects;
+    private Queue<GameObject> trashQueue = new Queue<GameObject>();
+    private VacuumBarrel vacuumBarrel;
     private Vector2 mousePos;
     private Vector3 worldPos;
     private Vector2 gunDir;
+    private bool canPush = true;
+    private float pushCooldown = 2f;
+
+    private void OnEnable()
+    {
+        vacuumBarrel = GetComponentInChildren<VacuumBarrel>();
+        if (vacuumBarrel != null)
+        {
+            vacuumBarrel.onTrashCollected += OnTrashCollected; // signal connected
+        }
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         mainCamera = Camera.main;
-
+    
         player = transform.parent.GetComponent<PlayerController>();
     }
 
@@ -33,12 +48,17 @@ public class VacuumGunController : MonoBehaviour
         // Rotate gun to look at mouse
         float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
-        // Debug.DrawLine(transform.position, worldPos, Color.red, Time.deltaTime);
 
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
-        
-        // CheckRaycast();
 
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush)
+        {            
+            Vector2 pushDir = (worldPos - player.transform.position).normalized;
+            player.ApplyPushForce(pushForce, pushDir);
+            canPush = false;
+            StartCoroutine(PushCooldown());
+        }
+        Debug.Log(gunDir);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -58,16 +78,36 @@ public class VacuumGunController : MonoBehaviour
             trash.ApplyVacuumForce(-vacuumForce, forceDir);
         }
 
-        // Apply Push Force off ground for air boost
-        if (collision.CompareTag("Ground") && InputSystem.actions.FindAction("Push").IsPressed())
-        {
-            Vector2 pushDir = (transform.position - player.transform.position).normalized;
-            player.ApplyPushForce(pushForce, pushDir);
-        }
-
 
     }
 
+    private void OnTrashCollected(TrashBase trash)
+    {
+        // Object Pooling Trash
+        print("Trash collected - signal works!");
+        trash.gameObject.SetActive(false);
+        trashQueue.Enqueue(trash.gameObject);
+    }
+
+    private IEnumerator PushCooldown()
+    {
+        yield return new WaitForSeconds(pushCooldown);
+        print("Push ready!");
+        canPush = true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        // Debug.DrawLine(transform.position, worldPos, Color.red, Time.deltaTime);
+    }
+
+    private void OnDisable()
+    {
+        if (vacuumBarrel != null)
+        {
+            vacuumBarrel.onTrashCollected -= OnTrashCollected; // signal disconnected
+        }
+    }
     // private void CheckRaycast()
     // {
     //     Vector2 origin = transform.position;
