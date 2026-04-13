@@ -17,18 +17,20 @@ enum PlayerStates
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float walkSpeed = 10f;
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpForce = 5f;
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private VacuumGunController vacuumGunController;
+    [SerializeField] private LayerMask groundLayer;
+    private float groundCheckAngle = 0f;
+    private Vector2 groundCheckSize = new Vector2(0.8f, 0.1f);
 
-    private bool isGrounded;
     private bool isIdle;
     private Rigidbody2D rb;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
+
+    private Vector2 moveInput;
 
     void OnEnable()
     {
@@ -50,60 +52,68 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        Vector2 moveInput = moveAction.ReadValue<Vector2>();
-        if (moveInput.x != 0f && isIdle)
-        {
-            currentState = PlayerStates.Walking;
-            rb.linearVelocityX = moveInput.x * walkSpeed;
-        }
-        else if(moveInput.x == 0f && isIdle)
-        {
-            currentState = PlayerStates.Idle;
-            rb.linearVelocityX = 0f;
+        moveInput = moveAction.ReadValue<Vector2>();
+        rb.linearVelocityX = moveInput.x * walkSpeed;
+        // if (moveInput.x != 0f && isIdle)
+        // {
+        //     currentState = PlayerStates.Walking;
+        //     rb.linearVelocityX = moveInput.x * walkSpeed;
+        // }
+        // else if(moveInput.x == 0f && isIdle)
+        // {
+        //     currentState = PlayerStates.Idle;
+        //     rb.linearVelocityX = 0f;
             
-        }
+        // }
 
-        if (jumpAction.IsPressed() && isGrounded)
+        if (jumpAction.IsPressed() && IsGrounded())
         {
-            StateFunction(PlayerStates.Jumping);
+            currentState = PlayerStates.Jumping;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        if (rb.linearVelocityY < 0f && !isGrounded)
+        if (rb.linearVelocityY < 0f && !IsGrounded())
         {
             currentState = PlayerStates.Falling;
         }
 
-
-        // Air horizontal control
-        if (currentState == PlayerStates.Jumping || currentState == PlayerStates.Falling || currentState == PlayerStates.ForcePushed)
+        if (IsGrounded() && currentState == PlayerStates.Falling)
         {
-            if (moveInput.x != 0f)
-            {
-                rb.AddForce(new Vector2(moveInput.x * 3f, 0f), ForceMode2D.Force);
-                print("Air Control: " + moveInput.x);
-            }
+            currentState = PlayerStates.Idle;
         }
 
+        // Air horizontal control
+        // if (currentState == PlayerStates.Jumping || currentState == PlayerStates.Falling || currentState == PlayerStates.ForcePushed)
+        // {
+        //     if (moveInput.x != 0f)
+        //     {
+        //         rb.AddForce(new Vector2(moveInput.x * 3f, 0f), ForceMode2D.Force);;
+        //     }
+        // }
+
         // print("Current State: " + currentState);
+
+        // StateFunction();
     }
 
     private void FixedUpdate()
     {
+        // rb.linearVelocityX = moveInput.x * walkSpeed;
+        rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+
         isIdle = (currentState != PlayerStates.ForcePushed && currentState != PlayerStates.Jumping && currentState != PlayerStates.Falling) ? true : false;
         
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        if (isGrounded && currentState == PlayerStates.Falling)
-        {
-            currentState = PlayerStates.Idle;
-        }
+        print("Is Grounded: " + IsGrounded());
+
         
     }
-    private void StateManager()
+
+    private bool IsGrounded()
     {
-        
+        return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
     }
-    private void StateFunction(PlayerStates currentState)
+
+    private void StateFunction()
     {
         switch (currentState)
         {
@@ -111,11 +121,13 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocityX = 0f;
                 break;
             case PlayerStates.Walking:
-                Vector2 moveInput = moveAction.ReadValue<Vector2>();
-                rb.linearVelocityX = moveInput.x * walkSpeed;
+                // Vector2 moveInput = moveAction.ReadValue<Vector2>();
+                // rb.linearVelocityX = moveInput.x * walkSpeed;
                 break;
             case PlayerStates.Jumping:
-                rb.linearVelocityY = jumpForce;
+                // rb.linearVelocityY = jumpForce;
+                // rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 break;
             case PlayerStates.Falling:
                 // Gravity will handle falling

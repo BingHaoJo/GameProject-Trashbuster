@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VacuumGunController
   vacuumForce: 7
-  pushForce: -30
+  pushForce: 10
 --- !u!60 &7628760883208751007
 PolygonCollider2D:
   m_ObjectHideFlags: 0
