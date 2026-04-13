@@ -9,6 +9,7 @@ public class VacuumBarrel : MonoBehaviour
     void Start()
     {
         vacuumGun = transform.parent.GetComponent<VacuumGunController>();
+        gameObject.SetActive(false);
     }
 
     void OnTriggerEnter2D(Collider2D collision)

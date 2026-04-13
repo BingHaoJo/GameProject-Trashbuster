@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class VacuumGunController : MonoBehaviour
 {
     [SerializeField] float vacuumForce = 7f;
-    [SerializeField] float pushForce = -30f;
+    [SerializeField] float pushForce = 10f;
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
@@ -51,10 +51,12 @@ public class VacuumGunController : MonoBehaviour
 
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush)
+        // Apply Push Force to push player
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
+        && worldPos.x > player.transform.position.x - 3f && worldPos.x < player.transform.position.x + 3f)
         {            
             Vector2 pushDir = (worldPos - player.transform.position).normalized;
-            player.ApplyPushForce(pushForce, pushDir);
+            player.ApplyPushForce(-pushForce, pushDir);
             canPush = false;
             StartCoroutine(PushCooldown());
         }
@@ -68,13 +70,18 @@ public class VacuumGunController : MonoBehaviour
         // Apply Vacuum Force on trash
         if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Suck").IsPressed())
         {
+            vacuumBarrel.gameObject.SetActive(true);
             trash.ApplyVacuumForce(vacuumForce, forceDir);
+        }
+        else
+        {
+            vacuumBarrel.gameObject.SetActive(false);
         }
 
         // Apply Push Force on trash
         if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Push").IsPressed())
         {
-            trash.ApplyVacuumForce(-vacuumForce, forceDir);
+            trash.ApplyVacuumForce(-pushForce, forceDir);
         }
 
 
@@ -106,6 +113,7 @@ public class VacuumGunController : MonoBehaviour
             vacuumBarrel.onTrashCollected -= OnTrashCollected; // signal disconnected
         }
     }
+    
     // private void CheckRaycast()
     // {
     //     Vector2 origin = transform.position;
