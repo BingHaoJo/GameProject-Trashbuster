@@ -18,14 +18,13 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float walkSpeed = 10f;
     [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private LayerMask groundLayer;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.8f, 0.1f);
 
-    private bool isIdle;
-    private Rigidbody2D rb;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
@@ -100,17 +99,16 @@ public class PlayerController : MonoBehaviour
     {
         // rb.linearVelocityX = moveInput.x * walkSpeed;
         rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
-
-        isIdle = (currentState != PlayerStates.ForcePushed && currentState != PlayerStates.Jumping && currentState != PlayerStates.Falling) ? true : false;
-        
-        print("Is Grounded: " + IsGrounded());
-
-        
     }
 
     private bool IsGrounded()
     {
         return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
+    }
+
+    private bool IsIdle()
+    {
+        return (currentState != PlayerStates.ForcePushed && currentState != PlayerStates.Jumping && currentState != PlayerStates.Falling) ? true : false;
     }
 
     private void StateFunction()

@@ -12,7 +12,7 @@ public class VacuumGunController : MonoBehaviour
     private Camera mainCamera;
     private PlayerController player;
     private Queue<GameObject> trashQueue = new Queue<GameObject>();
-    private VacuumBarrel vacuumBarrel;
+    [SerializeField] private VacuumBarrel vacuumBarrel;
     private Vector2 mousePos;
     private Vector3 worldPos;
     private Vector2 gunDir;
@@ -21,7 +21,6 @@ public class VacuumGunController : MonoBehaviour
 
     private void OnEnable()
     {
-        vacuumBarrel = GetComponentInChildren<VacuumBarrel>();
         if (vacuumBarrel != null)
         {
             vacuumBarrel.onTrashCollected += OnTrashCollected; // signal connected

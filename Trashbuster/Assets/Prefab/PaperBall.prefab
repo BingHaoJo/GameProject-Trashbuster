@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8111542724518783208}
   - component: {fileID: -7101829974312598329}
   m_Layer: 8
-  m_Name: Trash
+  m_Name: PaperBall
   m_TagString: Trash
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -169,4 +169,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bb605c3584a31f418ecfb20da25c094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrashBase
-  trashType: 0
+  trashType: 1
+  rb: {fileID: 8111542724518783208}

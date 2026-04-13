@@ -11,13 +11,7 @@ enum TrashType
 public class TrashBase : MonoBehaviour
 {
     [SerializeField] private TrashType trashType = TrashType.Plastic;
-    private Rigidbody2D rb;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-    }
+    [SerializeField] private Rigidbody2D rb;
 
     public void ApplyVacuumForce(float vacuumForce, Vector2 forceDir)
     {

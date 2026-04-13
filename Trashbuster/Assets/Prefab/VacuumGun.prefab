@@ -67,8 +67,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.0036956072}
-  m_Size: {x: 0.5, y: 0.6969669}
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1.5}
   m_Direction: 0
 --- !u!114 &715452926018054113
 MonoBehaviour:
@@ -82,6 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98506040152688c448d9d21a01fb9b1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  vacuumGun: {fileID: 7655124317406139347}
 --- !u!1 &3369892660130130859
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,6 +132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VacuumGunController
   vacuumForce: 7
   pushForce: 10
+  vacuumBarrel: {fileID: 715452926018054113}
 --- !u!60 &7628760883208751007
 PolygonCollider2D:
   m_ObjectHideFlags: 0

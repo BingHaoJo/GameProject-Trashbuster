@@ -183,6 +183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   walkSpeed: 10
   jumpForce: 10
+  rb: {fileID: 5746004410775304379}
   groundCheck: {fileID: 3137522406494822289}
   vacuumGunController: {fileID: 833369756214321097}
   groundLayer:
