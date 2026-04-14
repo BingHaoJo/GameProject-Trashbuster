@@ -6,18 +6,22 @@ using UnityEngine.InputSystem;
 
 public class VacuumGunController : MonoBehaviour
 {
-    [SerializeField] float vacuumForce = 7f;
-    [SerializeField] float pushForce = 10f;
+    private float vacuumForce = 7f;
+    private float pushForce = 10f;
+    private float shootForce = 2f;
+    [SerializeField] private VacuumBarrel vacuumBarrel;
+    [SerializeField] private GameObject trashBase;
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
     private Queue<GameObject> trashQueue = new Queue<GameObject>();
-    [SerializeField] private VacuumBarrel vacuumBarrel;
     private Vector2 mousePos;
     private Vector3 worldPos;
     private Vector2 gunDir;
     private bool canPush = true;
     private float pushCooldown = 2f;
+    private bool canShoot = true;
+    private float shootCooldown = 0.5f;
 
     private void OnEnable()
     {
@@ -50,15 +54,11 @@ public class VacuumGunController : MonoBehaviour
 
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        // Apply Push Force to push player
-        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
-        && worldPos.x > player.transform.position.x - 3f && worldPos.x < player.transform.position.x + 3f)
-        {            
-            Vector2 pushDir = (worldPos - player.transform.position).normalized;
-            player.ApplyPushForce(-pushForce, pushDir);
-            canPush = false;
-            StartCoroutine(PushCooldown());
+        if (canShoot)
+        {
+            TriggerShoot();
         }
+        TriggerPush();
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -69,12 +69,12 @@ public class VacuumGunController : MonoBehaviour
         // Apply Vacuum Force on trash
         if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Suck").IsPressed())
         {
-            vacuumBarrel.gameObject.SetActive(true);
+            vacuumBarrel.GetComponent<CapsuleCollider2D>().enabled = true; // enable collider to trigger collection
             trash.ApplyVacuumForce(vacuumForce, forceDir);
         }
         else
         {
-            vacuumBarrel.gameObject.SetActive(false);
+            vacuumBarrel.GetComponent<CapsuleCollider2D>().enabled = false;
         }
 
         // Apply Push Force on trash
@@ -93,11 +93,45 @@ public class VacuumGunController : MonoBehaviour
         trashQueue.Enqueue(trash.gameObject);
     }
 
+    private void TriggerPush()
+    {
+        // Apply Push Force to push player
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
+        && worldPos.x > player.transform.position.x - 3f && worldPos.x < player.transform.position.x + 3f)
+        {            
+            Vector2 pushDir = (worldPos - player.transform.position).normalized;
+            player.ApplyPushForce(-pushForce, pushDir);
+            canPush = false;
+            StartCoroutine(PushCooldown());
+        }
+    }
+
+    private void TriggerShoot()
+    {
+        if (InputSystem.actions.FindAction("Shoot").IsPressed())
+        {
+            GameObject newTrash = Instantiate(trashBase, vacuumBarrel.gameObject.transform.position, Quaternion.identity);
+            Vector2 shootDir = (worldPos - player.transform.position).normalized;
+            print(shootDir);
+            newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
+            canShoot = false;
+            StartCoroutine(ShootCooldown());
+        }
+
+    }
+
     private IEnumerator PushCooldown()
     {
         yield return new WaitForSeconds(pushCooldown);
         print("Push ready!");
         canPush = true;
+    }
+
+    private IEnumerator ShootCooldown()
+    {
+        yield return new WaitForSeconds(shootCooldown);
+        print("Shoot ready!");
+        canShoot = true;
     }
 
     private void OnDrawGizmos()

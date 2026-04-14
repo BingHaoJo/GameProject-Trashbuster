@@ -16,8 +16,8 @@ enum PlayerStates
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed = 10f;
-    [SerializeField] private float jumpForce = 5f;
+    private float walkSpeed = 13f;
+    private float jumpForce = 12f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");

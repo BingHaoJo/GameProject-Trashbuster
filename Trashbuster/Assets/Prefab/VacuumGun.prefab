@@ -40,7 +40,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1055303282433123286}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -133,6 +133,7 @@ MonoBehaviour:
   vacuumForce: 7
   pushForce: 10
   vacuumBarrel: {fileID: 715452926018054113}
+  trashBase: {fileID: 1147946401064085813, guid: a5022802b7a69f84fa107c775fd3ac9b, type: 3}
 --- !u!60 &7628760883208751007
 PolygonCollider2D:
   m_ObjectHideFlags: 0
