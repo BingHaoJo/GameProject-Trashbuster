@@ -54,7 +54,7 @@ public class VacuumGunController : MonoBehaviour
 
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        if (canShoot)
+        if (canShoot && trashQueue.Count > 0)
         {
             TriggerShoot();
         }
@@ -82,15 +82,14 @@ public class VacuumGunController : MonoBehaviour
         {
             trash.ApplyVacuumForce(-pushForce, forceDir);
         }
-
-
     }
 
-    private void OnTrashCollected(TrashBase trash)
+    private void OnTrashCollected(GameObject trash)
     {
         // Object Pooling Trash
-        trash.gameObject.SetActive(false);
-        trashQueue.Enqueue(trash.gameObject);
+        trash.SetActive(false);
+        trash.GetComponent<TrashBase>().isCollected = true;
+        trashQueue.Enqueue(trash);
     }
 
     private void TriggerPush()
@@ -110,9 +109,10 @@ public class VacuumGunController : MonoBehaviour
     {
         if (InputSystem.actions.FindAction("Shoot").IsPressed())
         {
-            GameObject newTrash = Instantiate(trashBase, vacuumBarrel.gameObject.transform.position, Quaternion.identity);
+            GameObject newTrash = trashQueue.Dequeue();
+            newTrash.transform.position = vacuumBarrel.transform.position;
+            newTrash.SetActive(true); // reuse collected trash
             Vector2 shootDir = (worldPos - player.transform.position).normalized;
-            print(shootDir);
             newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
             canShoot = false;
             StartCoroutine(ShootCooldown());

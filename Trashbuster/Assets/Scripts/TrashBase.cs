@@ -12,6 +12,7 @@ public class TrashBase : MonoBehaviour
 {
     [SerializeField] private TrashType trashType = TrashType.Plastic;
     [SerializeField] private Rigidbody2D rb;
+    public bool isCollected = false;
 
     public void ApplyShootForce(float shootForce, Vector2 shootDir)
     {

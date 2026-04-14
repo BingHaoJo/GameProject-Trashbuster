@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class VacuumBarrel : MonoBehaviour
 {
-    public event Action<TrashBase> onTrashCollected;
+    public event Action<GameObject> onTrashCollected;
     [SerializeField] private VacuumGunController vacuumGun;
 
 
@@ -13,7 +13,7 @@ public class VacuumBarrel : MonoBehaviour
     {
         if (collision.CompareTag("Trash"))
         {
-            TrashBase trash = collision.GetComponent<TrashBase>();
+            GameObject trash = collision.gameObject;
             onTrashCollected?.Invoke(trash); // signal emitted
         }
     }
