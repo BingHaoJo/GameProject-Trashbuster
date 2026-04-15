@@ -17,7 +17,7 @@ enum PlayerStates
 public class PlayerController : MonoBehaviour
 {
     private float walkSpeed = 13f;
-    private float jumpForce = 12f;
+    private float jumpForce = 13f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
