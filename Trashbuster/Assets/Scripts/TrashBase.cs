@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 
-enum TrashType
+public enum TrashType
 {
     Plastic,
     Paper,
@@ -10,10 +11,9 @@ enum TrashType
 
 public class TrashBase : MonoBehaviour
 {
-    [SerializeField] private TrashType trashType = TrashType.Plastic;
+    public TrashType trashType = TrashType.Plastic;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private PlayerController player;
-    public bool isCollected = false;
 
     void Awake()
     {
@@ -21,10 +21,6 @@ public class TrashBase : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
-    }
-
-    void Update()
-    {
     }
 
     private float ToPlayerDist()

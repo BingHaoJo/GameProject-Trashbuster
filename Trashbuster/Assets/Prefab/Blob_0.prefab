@@ -181,8 +181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7b8df16b2235447b7a5f2635ef30d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  walkSpeed: 10
-  jumpForce: 10
   rb: {fileID: 5746004410775304379}
   groundCheck: {fileID: 3137522406494822289}
   vacuumGunController: {fileID: 833369756214321097}

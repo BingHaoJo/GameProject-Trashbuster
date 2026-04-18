@@ -21,7 +21,7 @@ public class VacuumGunController : MonoBehaviour
     private bool canPush = true;
     private float pushCooldown = 2f;
     private bool canShoot = true;
-    private float shootCooldown = 0.5f;
+    private float shootCooldown = 0.3f;
 
     private void OnEnable()
     {
@@ -51,7 +51,6 @@ public class VacuumGunController : MonoBehaviour
         // Rotate gun to look at mouse
         float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
-
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
         if (canShoot && trashQueue.Count > 0)
@@ -88,7 +87,6 @@ public class VacuumGunController : MonoBehaviour
     {
         // Object Pooling Trash
         trash.SetActive(false);
-        trash.GetComponent<TrashBase>().isCollected = true;
         trashQueue.Enqueue(trash);
     }
 
@@ -132,11 +130,6 @@ public class VacuumGunController : MonoBehaviour
         yield return new WaitForSeconds(shootCooldown);
         print("Shoot ready!");
         canShoot = true;
-    }
-
-    private void OnDrawGizmos()
-    {
-        // Debug.DrawLine(transform.position, worldPos, Color.red, Time.deltaTime);
     }
 
     private void OnDisable()
