@@ -3,6 +3,7 @@ using UnityEngine;
 
 public enum TrashType
 {
+    General,
     Plastic,
     Paper,
     Metal,

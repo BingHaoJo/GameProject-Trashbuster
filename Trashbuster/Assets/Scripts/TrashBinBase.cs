@@ -16,14 +16,14 @@ public class TrashBinBase : MonoBehaviour
 {
     [SerializeField] private GameObject trash;
     [SerializeField] private BinType binType = BinType.General;
-    [SerializeField] private PortalTrigger portal;
-    private int completionThreshold = 3;
+    [SerializeField] private int completionThreshold = 3;
     private int currentTrashCount = 0;
     public bool isCompleted = false;
 
     void Start()
     {
         // completionThreshold = trash.transform.childCount;
+        trash = GameObject.Find("Trash");
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -34,7 +34,6 @@ public class TrashBinBase : MonoBehaviour
 
             if (currentTrashCount >= completionThreshold)
             {
-                // portal.gameObject.SetActive(true);
                 isCompleted = true;
             }
         }

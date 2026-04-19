@@ -30,9 +30,9 @@ public class PortalTrigger : MonoBehaviour
         {
             SceneManager.LoadScene("Level2");
         }
-        else
+        else if (sceneName == "Level2")
         {
-            SceneManager.LoadScene("Level3");
+            SceneManager.LoadScene("Level3_Vertical");
         }
     }
 

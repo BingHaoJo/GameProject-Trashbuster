@@ -28,9 +28,9 @@ public class CompletionCheck : MonoBehaviour
                 portal.gameObject.SetActive(true);
             }
         }
-        else if (trashBins.Length == 3)
+        else if (trashBins.Length == 4)
         {
-            if (trashBins[0].isCompleted && trashBins[1].isCompleted && trashBins[2].isCompleted)
+            if (trashBins[0].isCompleted && trashBins[1].isCompleted && trashBins[2].isCompleted && trashBins[3].isCompleted)
             {
                 portal.gameObject.SetActive(true);
             }
