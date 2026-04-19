@@ -230,14 +230,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: VacuumGun
       objectReference: {fileID: 0}
-    - target: {fileID: 3369892660130130859, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5220371795492800358, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8427218660043455453, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

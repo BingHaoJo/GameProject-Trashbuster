@@ -23,12 +23,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private LayerMask groundLayer;
     private float groundCheckAngle = 0f;
-    private Vector2 groundCheckSize = new Vector2(0.8f, 0.1f);
+    private Vector2 groundCheckSize = new Vector2(0.8f, 0.05f);
 
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
-
     private Vector2 moveInput;
 
     void OnEnable()
@@ -51,33 +50,25 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         moveInput = moveAction.ReadValue<Vector2>();
-        rb.linearVelocityX = moveInput.x * walkSpeed;
-        // if (moveInput.x != 0f && isIdle)
-        // {
-        //     currentState = PlayerStates.Walking;
-        //     rb.linearVelocityX = moveInput.x * walkSpeed;
-        // }
-        // else if(moveInput.x == 0f && isIdle)
-        // {
-        //     currentState = PlayerStates.Idle;
-        //     rb.linearVelocityX = 0f;
-            
-        // }
+        // rb.linearVelocityX = moveInput.x * walkSpeed;
 
         if (jumpAction.IsPressed() && IsGrounded())
         {
             currentState = PlayerStates.Jumping;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            // rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            StateFunction();
         }
 
         if (rb.linearVelocityY < 0f && !IsGrounded())
         {
             currentState = PlayerStates.Falling;
+            StateFunction();
         }
 
-        if (IsGrounded() && currentState == PlayerStates.Falling)
+        if (currentState == PlayerStates.ForcePushed && IsGrounded())
         {
-            currentState = PlayerStates.Idle;
+            StartCoroutine(AllowIdle());
+            StateFunction();
         }
 
         // Air horizontal control
@@ -89,15 +80,25 @@ public class PlayerController : MonoBehaviour
         //     }
         // }
 
-        // print("Current State: " + currentState);
+        print("Current State: " + currentState);
 
-        // StateFunction();
+        
     }
 
     private void FixedUpdate()
     {
         // rb.linearVelocityX = moveInput.x * walkSpeed;
-        rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+        if (moveInput.x != 0f)
+        {
+            currentState = PlayerStates.Walking;
+            StateFunction();
+        }
+
+        if(moveInput.x == 0f && IsIdle())
+        {
+            currentState = PlayerStates.Idle;
+            StateFunction();
+        }
     }
 
     private bool IsGrounded()
@@ -107,7 +108,13 @@ public class PlayerController : MonoBehaviour
 
     private bool IsIdle()
     {
-        return (currentState != PlayerStates.ForcePushed && currentState != PlayerStates.Jumping && currentState != PlayerStates.Falling) ? true : false;
+        return (IsGrounded() && currentState != PlayerStates.Jumping && currentState != PlayerStates.ForcePushed) ? true : false;
+    }
+
+    private IEnumerator AllowIdle() // to transition to idle state after being force pushed whilst grounded
+    {
+        yield return new WaitForSeconds(0.2f);
+        currentState = PlayerStates.Idle;
     }
 
     private void StateFunction()
@@ -115,11 +122,10 @@ public class PlayerController : MonoBehaviour
         switch (currentState)
         {
             case PlayerStates.Idle:
-                rb.linearVelocityX = 0f;
+                rb.linearVelocity = Vector2.zero;
                 break;
             case PlayerStates.Walking:
-                // Vector2 moveInput = moveAction.ReadValue<Vector2>();
-                // rb.linearVelocityX = moveInput.x * walkSpeed;
+                rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
                 break;
             case PlayerStates.Jumping:
                 // rb.linearVelocityY = jumpForce;
@@ -155,6 +161,7 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerStates.ForcePushed;
         rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
         // rb.linearVelocity = pushDir * pushForce;
+        // rb.linearVelocity = new Vector2(pushDir.x * pushForce, pushDir.y * pushForce);
     }
 
     void OnDisable()

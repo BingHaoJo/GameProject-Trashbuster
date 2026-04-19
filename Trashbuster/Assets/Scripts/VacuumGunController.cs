@@ -93,8 +93,7 @@ public class VacuumGunController : MonoBehaviour
     private void TriggerPush()
     {
         // Apply Push Force to push player
-        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
-        && worldPos.x > player.transform.position.x - 3f && worldPos.x < player.transform.position.x + 3f)
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f)
         {            
             Vector2 pushDir = (worldPos - player.transform.position).normalized;
             player.ApplyPushForce(-pushForce, pushDir);

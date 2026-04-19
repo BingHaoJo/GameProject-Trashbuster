@@ -130,8 +130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d08c78a7ad965a4eb6edefae222caed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VacuumGunController
-  vacuumForce: 7
-  pushForce: 10
   vacuumBarrel: {fileID: 715452926018054113}
   trashBase: {fileID: 1147946401064085813, guid: a5022802b7a69f84fa107c775fd3ac9b, type: 3}
 --- !u!60 &7628760883208751007
