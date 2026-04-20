@@ -399,7 +399,7 @@
                     "name": "",
                     "id": "28c95d4f-a4af-43ee-94f2-a32d1c04b6d4",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Suck",

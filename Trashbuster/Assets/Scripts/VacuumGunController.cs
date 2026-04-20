@@ -10,11 +10,15 @@ public class VacuumGunController : MonoBehaviour
     private float pushForce = 10f;
     private float shootForce = 2f;
     [SerializeField] private VacuumBarrel vacuumBarrel;
-    [SerializeField] private GameObject trashBase;
+    private Queue<TrashBase> trashSlot1 = new Queue<TrashBase>();
+    private Queue<TrashBase> trashSlot2 = new Queue<TrashBase>();
+    private Queue<TrashBase> trashSlot3 = new Queue<TrashBase>();
+    private Queue<TrashBase> trashSlot4 = new Queue<TrashBase>();
+    private List<Queue<TrashBase>> trashSlots;
+
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
-    private Queue<GameObject> trashQueue = new Queue<GameObject>();
     private Vector2 mousePos;
     private Vector3 worldPos;
     private Vector2 gunDir;
@@ -38,6 +42,9 @@ public class VacuumGunController : MonoBehaviour
         mainCamera = Camera.main;
     
         player = transform.parent.GetComponent<PlayerController>();
+
+        trashSlots = new List<Queue<TrashBase>> { trashSlot1, trashSlot2, trashSlot3, trashSlot4 };
+
     }
 
     // Update is called once per frame
@@ -53,7 +60,7 @@ public class VacuumGunController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        if (canShoot && trashQueue.Count > 0)
+        if (canShoot && trashSlot1.Count > 0)
         {
             TriggerShoot();
         }
@@ -83,11 +90,19 @@ public class VacuumGunController : MonoBehaviour
         }
     }
 
-    private void OnTrashCollected(GameObject trash)
+    private void OnTrashCollected(TrashBase trash)
     {
-        // Object Pooling Trash
-        trash.SetActive(false);
-        trashQueue.Enqueue(trash);
+        // Object pooling trash collection
+        foreach (Queue<TrashBase> slot in trashSlots)
+        {
+            if (slot.Count < 1 || slot.Peek().trashType == trash.trashType)
+            {
+                slot.Enqueue(trash);
+                trash.gameObject.SetActive(false);
+                return;
+            }
+        }
+        // all slots full with different trash types, cannot collect
     }
 
     private void TriggerPush()
@@ -106,7 +121,7 @@ public class VacuumGunController : MonoBehaviour
     {
         if (InputSystem.actions.FindAction("Shoot").IsPressed())
         {
-            GameObject newTrash = trashQueue.Dequeue();
+            GameObject newTrash = trashSlot1.Dequeue().gameObject;
             newTrash.transform.position = vacuumBarrel.transform.position;
             newTrash.SetActive(true); // reuse collected trash
             Vector2 shootDir = (worldPos - player.transform.position).normalized;

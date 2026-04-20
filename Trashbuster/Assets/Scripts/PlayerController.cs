@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         //     }
         // }
 
-        print("Current State: " + currentState);
+        // print("Current State: " + currentState);
 
         
     }
@@ -128,8 +128,6 @@ public class PlayerController : MonoBehaviour
                 rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
                 break;
             case PlayerStates.Jumping:
-                // rb.linearVelocityY = jumpForce;
-                // rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 break;
             case PlayerStates.Falling:
@@ -143,16 +141,15 @@ public class PlayerController : MonoBehaviour
 
     void OnMousePositionUpdated(Vector2 mousePos)
     {
+        // Flip player sprite
         // Adding a small threshold to prevent jitter when mouse is near the player's center
         if (mousePos.x > transform.position.x + 0.1f)
         {
             transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            // print("Facing Right" + mousePos.x + " /" + transform.position.x);
         }
         else if (mousePos.x < transform.position.x - 0.1f)
         {
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            // print("Facing Left" + mousePos.x + " /" + transform.position.x);
         }
     }
 
@@ -160,8 +157,6 @@ public class PlayerController : MonoBehaviour
     {
         currentState = PlayerStates.ForcePushed;
         rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
-        // rb.linearVelocity = pushDir * pushForce;
-        // rb.linearVelocity = new Vector2(pushDir.x * pushForce, pushDir.y * pushForce);
     }
 
     void OnDisable()

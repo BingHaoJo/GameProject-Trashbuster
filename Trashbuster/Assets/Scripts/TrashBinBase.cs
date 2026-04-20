@@ -24,6 +24,7 @@ public class TrashBinBase : MonoBehaviour
     {
         // completionThreshold = trash.transform.childCount;
         trash = GameObject.Find("Trash");
+        print(BinType.General);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -41,54 +42,17 @@ public class TrashBinBase : MonoBehaviour
 
     private void TrashOrganizer(TrashBase trash)
     {
-        switch (binType)
+        if (binType.ToString() == trash.trashType.ToString()) // if it's the same type, accept
         {
-            case BinType.General:
-                // Accept all trash types
-                trash.gameObject.SetActive(false);
-                currentTrashCount++;
-                break;
-            case BinType.Recycle:
-                // Accept all recyclable trash types
-                if (trash.trashType == TrashType.Paper || trash.trashType == TrashType.Plastic 
-                || trash.trashType == TrashType.Metal || trash.trashType == TrashType.Glass)
-                {
-                    trash.gameObject.SetActive(false);
-                    currentTrashCount++;
-                }
-                break;
-            case BinType.Paper:
-                // Accept only paper trash
-                if (trash.trashType == TrashType.Paper)
-                {
-                    trash.gameObject.SetActive(false);
-                    currentTrashCount++;
-                }
-                break;
-            case BinType.Plastic:
-                // Accept only plastic trash
-                if (trash.trashType == TrashType.Plastic)
-                {
-                    trash.gameObject.SetActive(false);
-                    currentTrashCount++;
-                }
-                break;
-            case BinType.Metal:
-                // Accept only metal trash
-                if (trash.trashType == TrashType.Metal)
-                {
-                    trash.gameObject.SetActive(false);
-                    currentTrashCount++;
-                }
-                break;
-            case BinType.Glass:
-                // Accept only glass trash
-                if (trash.trashType == TrashType.Glass)
-                {
-                    trash.gameObject.SetActive(false);
-                    currentTrashCount++;
-                }
-                break;
+            trash.gameObject.SetActive(false);
+            currentTrashCount++;
+            CompletionCheck.trashScore++;
+        }
+        else if (binType == BinType.Recycle && trash.trashType != TrashType.General) // If it's recyclable and not general, accept
+        {
+            trash.gameObject.SetActive(false);
+            currentTrashCount++;
+            CompletionCheck.trashScore++;
         }
     }
 }
