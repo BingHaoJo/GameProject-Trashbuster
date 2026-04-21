@@ -16,13 +16,6 @@ public class TrashBase : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private PlayerController player;
 
-    void Awake()
-    {
-        if (ToPlayerDist() > 12f)
-        {
-            gameObject.SetActive(false);
-        }
-    }
 
     private float ToPlayerDist()
     {

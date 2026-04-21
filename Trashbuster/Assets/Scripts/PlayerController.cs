@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
+    [SerializeField] private bool ControlsDisabled = false;
+    [SerializeField] private InputActionAsset playerInput;
 
     void OnEnable()
     {
@@ -44,6 +46,16 @@ public class PlayerController : MonoBehaviour
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        if (ControlsDisabled)
+        {
+            // playerAction.actions.FindActionMap("Player").Disable();
+            playerInput.FindActionMap("Player").Disable();
+        }
+        else
+        {
+            playerInput.FindActionMap("Player").Enable();
+        }
+
     }
 
     // Update is called once per frame
