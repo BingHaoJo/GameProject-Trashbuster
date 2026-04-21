@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
-    [SerializeField] private bool ControlsDisabled = false;
+    [SerializeField] public static bool ControlsDisabled = false;
     [SerializeField] private InputActionAsset playerInput;
 
     void OnEnable()

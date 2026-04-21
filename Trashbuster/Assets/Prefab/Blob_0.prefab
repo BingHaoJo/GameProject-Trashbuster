@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1562078940297707349}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.6138873, y: -0.58902794, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -187,6 +187,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  ControlsDisabled: 0
+  playerInput: {fileID: 0}
 --- !u!1 &4387450820038344513
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,6 +228,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1056770593850435203}
     m_Modifications:
+    - target: {fileID: 715452926018054113, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
+      propertyPath: barrelCollider
+      value: 
+      objectReference: {fileID: 1655610388933284508}
     - target: {fileID: 3369892660130130859, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
       propertyPath: m_Name
       value: VacuumGun
@@ -293,5 +299,10 @@ MonoBehaviour:
 --- !u!4 &1540144050008045511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8427218660043455453, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
+  m_PrefabInstance: {fileID: 7038227240924466202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!70 &1655610388933284508 stripped
+CapsuleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8598821406829403782, guid: b0b669b7c76249c4f90543bb858bc9b3, type: 3}
   m_PrefabInstance: {fileID: 7038227240924466202}
   m_PrefabAsset: {fileID: 0}

@@ -29,10 +29,17 @@ public class PortalTrigger : MonoBehaviour
         if (sceneName == "Level1")
         {
             SceneManager.LoadScene("Level2");
+            SceneStateManager.Level1Completed = true;
         }
         else if (sceneName == "Level2")
         {
             SceneManager.LoadScene("Level3_Vertical");
+            SceneStateManager.Level2Completed = true;
+        }
+        else if (sceneName == "Level3_Vertical")
+        {
+            SceneManager.LoadScene("WinScreen");
+            SceneStateManager.Level3Completed = true;
         }
     }
 

@@ -48,11 +48,21 @@ public class TrashBinBase : MonoBehaviour
             currentTrashCount++;
             CompletionCheck.trashScore++;
         }
-        else if (binType == BinType.Recycle && trash.trashType != TrashType.General) // If it's recyclable and not general, accept
+        else if (binType == BinType.Recycle && trash.trashType != TrashType.General) // If it's recyclable, accept
         {
             trash.gameObject.SetActive(false);
             currentTrashCount++;
             CompletionCheck.trashScore++;
+        }
+        else if (binType == BinType.General) // If it's general, accept
+        {
+            trash.gameObject.SetActive(false);
+            currentTrashCount++;
+            CompletionCheck.trashScore++;
+        }
+        else // if it's the wrong type, reject
+        {
+            trash.ApplyShootForce(5f, (trash.transform.position - transform.position).normalized);
         }
     }
 }

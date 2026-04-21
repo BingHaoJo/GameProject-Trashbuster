@@ -83,6 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   vacuumGun: {fileID: 7655124317406139347}
+  barrelCollider: {fileID: 8598821406829403782}
 --- !u!1 &3369892660130130859
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +132,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VacuumGunController
   vacuumBarrel: {fileID: 715452926018054113}
-  trashBase: {fileID: 1147946401064085813, guid: a5022802b7a69f84fa107c775fd3ac9b, type: 3}
 --- !u!60 &7628760883208751007
 PolygonCollider2D:
   m_ObjectHideFlags: 0

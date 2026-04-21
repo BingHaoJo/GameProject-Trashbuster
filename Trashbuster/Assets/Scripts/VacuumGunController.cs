@@ -75,12 +75,7 @@ public class VacuumGunController : MonoBehaviour
         // Apply Vacuum Force on trash
         if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Suck").IsPressed())
         {
-            vacuumBarrel.GetComponent<CapsuleCollider2D>().enabled = true; // enable collider to trigger collection
             trash.ApplyVacuumForce(vacuumForce, forceDir);
-        }
-        else
-        {
-            vacuumBarrel.GetComponent<CapsuleCollider2D>().enabled = false;
         }
 
         // Apply Push Force on trash
