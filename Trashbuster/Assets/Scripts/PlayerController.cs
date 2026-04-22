@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 
 enum PlayerStates
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private bool ControlsDisabled = false;
+    [SerializeField] private InputActionAsset playerInput;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.8f, 0.05f);
 
@@ -29,11 +32,10 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
-    [SerializeField] public static bool ControlsDisabled = false;
-    [SerializeField] private InputActionAsset playerInput;
-
+    
     void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (vacuumGunController != null)
         {
             vacuumGunController.mousePositionUpdated += OnMousePositionUpdated; // signal connected
@@ -48,7 +50,6 @@ public class PlayerController : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
         if (ControlsDisabled)
         {
-            // playerAction.actions.FindActionMap("Player").Disable();
             playerInput.FindActionMap("Player").Disable();
         }
         else
@@ -151,6 +152,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3_Vertical")
+        {
+            ControlsDisabled = false; // enable player controls when scene is loaded
+        }
+        else if (scene.name == "MainMenu" || scene.name == "LevelSelect")
+        {
+            ControlsDisabled = true; // disable player controls for other scenes
+        }
+    }
+
     void OnMousePositionUpdated(Vector2 mousePos)
     {
         // Flip player sprite
@@ -173,6 +186,7 @@ public class PlayerController : MonoBehaviour
 
     void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         if (vacuumGunController != null)
         {
             vacuumGunController.mousePositionUpdated -= OnMousePositionUpdated; // signal disconnected

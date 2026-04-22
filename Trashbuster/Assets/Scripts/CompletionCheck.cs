@@ -1,7 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class CompletionCheck : MonoBehaviour
 {
@@ -9,20 +7,6 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private TrashBinBase[] trashBins;
     [SerializeField] private TMP_Text scoreText;
     public static int trashScore = 0;
-
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        PlayerController.ControlsDisabled = false; // enable player controls when scene is loaded
-    }
-    
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
 
     // Update is called once per frame
     void Update()

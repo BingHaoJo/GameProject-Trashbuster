@@ -32,7 +32,7 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void BackButtonFunction()
+    public void MainMenuButtonFunction()
     {
         SceneStateManager.LoadScene("MainMenu");
     }
