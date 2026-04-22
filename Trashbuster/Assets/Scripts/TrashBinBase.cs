@@ -60,9 +60,5 @@ public class TrashBinBase : MonoBehaviour
             currentTrashCount++;
             CompletionCheck.trashScore++;
         }
-        else // if it's the wrong type, reject
-        {
-            trash.ApplyShootForce(5f, (trash.transform.position - transform.position).normalized);
-        }
     }
 }

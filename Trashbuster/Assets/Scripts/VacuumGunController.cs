@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class VacuumGunController : MonoBehaviour
 {
@@ -10,11 +12,16 @@ public class VacuumGunController : MonoBehaviour
     private float pushForce = 10f;
     private float shootForce = 2f;
     [SerializeField] private VacuumBarrel vacuumBarrel;
+    [SerializeField] private GameObject Slot1;
+    [SerializeField] private GameObject Slot2;
+    [SerializeField] private GameObject Slot3;
+    [SerializeField] private GameObject Slot4;
     private Queue<TrashBase> trashSlot1 = new Queue<TrashBase>();
     private Queue<TrashBase> trashSlot2 = new Queue<TrashBase>();
     private Queue<TrashBase> trashSlot3 = new Queue<TrashBase>();
     private Queue<TrashBase> trashSlot4 = new Queue<TrashBase>();
     private List<Queue<TrashBase>> trashSlots;
+    private Queue<TrashBase> currentSlot;
 
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
@@ -45,6 +52,7 @@ public class VacuumGunController : MonoBehaviour
 
         trashSlots = new List<Queue<TrashBase>> { trashSlot1, trashSlot2, trashSlot3, trashSlot4 };
 
+        currentSlot = trashSlots[0]; // default to first slot
     }
 
     // Update is called once per frame
@@ -60,11 +68,15 @@ public class VacuumGunController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        if (canShoot && trashSlot1.Count > 0)
+        if (canShoot && currentSlot.Count > 0)
         {
             TriggerShoot();
         }
+
         TriggerPush();
+        SwitchHotBar();
+        ImageHotbar();
+        NumHotbar();
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -87,7 +99,7 @@ public class VacuumGunController : MonoBehaviour
 
     private void OnTrashCollected(TrashBase trash)
     {
-        // Object pooling trash collection
+        // Object pooling trash collection into hotbar slots
         foreach (Queue<TrashBase> slot in trashSlots)
         {
             if (slot.Count < 1 || slot.Peek().trashType == trash.trashType)
@@ -116,7 +128,7 @@ public class VacuumGunController : MonoBehaviour
     {
         if (InputSystem.actions.FindAction("Shoot").IsPressed())
         {
-            GameObject newTrash = trashSlot1.Dequeue().gameObject;
+            GameObject newTrash = currentSlot.Dequeue().gameObject;
             newTrash.transform.position = vacuumBarrel.transform.position;
             newTrash.SetActive(true); // reuse collected trash
             Vector2 shootDir = (worldPos - player.transform.position).normalized;
@@ -125,6 +137,47 @@ public class VacuumGunController : MonoBehaviour
             StartCoroutine(ShootCooldown());
         }
 
+    }
+
+    private void SwitchHotBar()
+    {
+        if (InputSystem.actions.FindAction("Hotbar1").IsPressed())
+        {
+            currentSlot = trashSlots[0];
+        }
+        else if (InputSystem.actions.FindAction("Hotbar2").IsPressed())
+        {
+            currentSlot = trashSlots[1];
+        }
+        else if (InputSystem.actions.FindAction("Hotbar3").IsPressed())
+        {
+            currentSlot = trashSlots[2];
+        }
+        else if (InputSystem.actions.FindAction("Hotbar4").IsPressed())
+        {
+            currentSlot = trashSlots[3];
+        }
+        // Update hotbar UI based on currentSlot
+        Slot1.GetComponent<Image>().color = (currentSlot == trashSlots[0]) ? Color.yellow : Color.purple;
+        Slot2.GetComponent<Image>().color = (currentSlot == trashSlots[1]) ? Color.yellow : Color.purple;
+        Slot3.GetComponent<Image>().color = (currentSlot == trashSlots[2]) ? Color.yellow : Color.purple;
+        Slot4.GetComponent<Image>().color = (currentSlot == trashSlots[3]) ? Color.yellow : Color.purple;
+    }
+
+    private void ImageHotbar()
+    {
+        Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot2.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot2.Count > 0) ? trashSlot2.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot3.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot3.Count > 0) ? trashSlot3.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot4.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot4.Count > 0) ? trashSlot4.Peek().GetComponent<SpriteRenderer>().sprite : null;
+    }
+
+    private void NumHotbar()
+    {
+            Slot1.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot1.Count > 0) ? trashSlot1.Count.ToString() : "";
+            Slot2.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot2.Count > 0) ? trashSlot2.Count.ToString() : "";
+            Slot3.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot3.Count > 0) ? trashSlot3.Count.ToString() : "";
+            Slot4.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot4.Count > 0) ? trashSlot4.Count.ToString() : "";
     }
 
     private IEnumerator PushCooldown()
@@ -149,35 +202,4 @@ public class VacuumGunController : MonoBehaviour
         }
     }
     
-    // private void CheckRaycast()
-    // {
-    //     Vector2 origin = transform.position;
-    //     Vector2 aimDir = transform.right;         // direction gun is facing
-    //     Vector2 perpDir = transform.up;           // local up — perpendicular to aim
-
-    //     Vector2 raycastDir1 = aimDir + perpDir * 0.2f;
-    //     Vector2 raycastDir2 = aimDir + perpDir * 0.1f;
-    //     Vector2 raycastDir3 = aimDir;
-    //     Vector2 raycastDir4 = aimDir - perpDir * 0.1f;
-    //     Vector2 raycastDir5 = aimDir - perpDir * 0.2f;
-
-    //     RaycastHit2D hit1 = Physics2D.Raycast(origin, raycastDir1, maxRaycastDist, LayerMask.GetMask("Trash"), minDepth: -1f, maxDepth: 1f);
-    //     RaycastHit2D hit2 = Physics2D.Raycast(origin, raycastDir2, maxRaycastDist, LayerMask.GetMask("Trash"), minDepth: -1f, maxDepth: 1f);
-    //     RaycastHit2D hit3 = Physics2D.Raycast(origin, raycastDir3, maxRaycastDist, LayerMask.GetMask("Trash"), minDepth: -1f, maxDepth: 1f);
-    //     RaycastHit2D hit4 = Physics2D.Raycast(origin, raycastDir4, maxRaycastDist, LayerMask.GetMask("Trash"), minDepth: -1f, maxDepth: 1f);
-    //     RaycastHit2D hit5 = Physics2D.Raycast(origin, raycastDir5, maxRaycastDist, LayerMask.GetMask("Trash"), minDepth: -1f, maxDepth: 1f);
-
-    //     Debug.DrawRay(origin, raycastDir1 * maxRaycastDist, Color.green, Time.deltaTime);
-    //     Debug.DrawRay(origin, raycastDir2 * maxRaycastDist, Color.green, Time.deltaTime);
-    //     Debug.DrawRay(origin, raycastDir3 * maxRaycastDist, Color.red, Time.deltaTime);
-    //     Debug.DrawRay(origin, raycastDir4 * maxRaycastDist, Color.blue, Time.deltaTime);
-    //     Debug.DrawRay(origin, raycastDir5 * maxRaycastDist, Color.blue, Time.deltaTime);
-
-    //     if ((hit1 || hit2 || hit3 || hit4 || hit5) && InputSystem.actions.FindAction("Suck").IsPressed())
-    //     {
-    //         RaycastHit2D hit = hit1 ? hit1 : (hit2 ? hit2 : (hit3 ? hit3 : (hit4 ? hit4 : hit5)));
-    //         Vector2 forceDir = ((Vector2)transform.position - hit.point).normalized;
-    //         hit.collider.gameObject.GetComponent<TrashBase>()?.ApplyVacuumForce(vacuumForce, forceDir);
-    //     }
-    // }
 }
