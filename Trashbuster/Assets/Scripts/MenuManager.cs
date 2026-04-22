@@ -1,20 +1,25 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
     void Update()
     {
-        if (SceneStateManager.Level2Completed)
+        if (SceneManager.GetActiveScene().name == "LevelSelect")
         {
-            // Unlock Level 3 button
-            GameObject.Find("Level2Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
-        }
+            if (SceneStateManager.Level2Completed)
+            {
+                // Unlock Level 3 button
+                GameObject.Find("Level2Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
+            }
 
-        if (SceneStateManager.Level3Completed)
-        {
-            // Unlock Level 2 button
-            GameObject.Find("Level3Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
+            if (SceneStateManager.Level3Completed)
+            {
+                // Unlock Level 2 button
+                GameObject.Find("Level3Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
+            }
         }
+        
     }
 
     public void PlayButtonFunction()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class VacuumGunController : MonoBehaviour
@@ -74,9 +75,12 @@ public class VacuumGunController : MonoBehaviour
         }
 
         TriggerPush();
+        
         SwitchHotBar();
-        ImageHotbar();
-        NumHotbar();
+        if (SceneStateManager.InLevelScene)
+        {
+            UIHotBar();
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -157,27 +161,27 @@ public class VacuumGunController : MonoBehaviour
         {
             currentSlot = trashSlots[3];
         }
+    }
+
+    private void UIHotBar()
+    {
+        // Update hotbar UI images based on the top item in each slot
+        Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot2.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot2.Count > 0) ? trashSlot2.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot3.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot3.Count > 0) ? trashSlot3.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        Slot4.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot4.Count > 0) ? trashSlot4.Peek().GetComponent<SpriteRenderer>().sprite : null;
+
         // Update hotbar UI based on currentSlot
         Slot1.GetComponent<Image>().color = (currentSlot == trashSlots[0]) ? Color.yellow : Color.purple;
         Slot2.GetComponent<Image>().color = (currentSlot == trashSlots[1]) ? Color.yellow : Color.purple;
         Slot3.GetComponent<Image>().color = (currentSlot == trashSlots[2]) ? Color.yellow : Color.purple;
         Slot4.GetComponent<Image>().color = (currentSlot == trashSlots[3]) ? Color.yellow : Color.purple;
-    }
 
-    private void ImageHotbar()
-    {
-        Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot2.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot2.Count > 0) ? trashSlot2.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot3.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot3.Count > 0) ? trashSlot3.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot4.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot4.Count > 0) ? trashSlot4.Peek().GetComponent<SpriteRenderer>().sprite : null;
-    }
-
-    private void NumHotbar()
-    {
-            Slot1.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot1.Count > 0) ? trashSlot1.Count.ToString() : "";
-            Slot2.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot2.Count > 0) ? trashSlot2.Count.ToString() : "";
-            Slot3.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot3.Count > 0) ? trashSlot3.Count.ToString() : "";
-            Slot4.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot4.Count > 0) ? trashSlot4.Count.ToString() : "";
+        // Update hotbar UI numbers based on the count of items in each slot
+        Slot1.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot1.Count > 0) ? trashSlot1.Count.ToString() : "";
+        Slot2.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot2.Count > 0) ? trashSlot2.Count.ToString() : "";
+        Slot3.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot3.Count > 0) ? trashSlot3.Count.ToString() : "";
+        Slot4.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot4.Count > 0) ? trashSlot4.Count.ToString() : "";
     }
 
     private IEnumerator PushCooldown()
