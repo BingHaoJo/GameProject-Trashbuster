@@ -24,7 +24,6 @@ public class TrashBinBase : MonoBehaviour
     {
         // completionThreshold = trash.transform.childCount;
         trash = GameObject.Find("Trash");
-        print(BinType.General);
     }
 
     void OnTriggerEnter2D(Collider2D collision)

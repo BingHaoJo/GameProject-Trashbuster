@@ -162,6 +162,8 @@ public class PlayerController : MonoBehaviour
         {
             ControlsDisabled = true; // disable player controls for other scenes
         }
+
+        SceneStateManager.CheckInLevelScene();
     }
 
     void OnMousePositionUpdated(Vector2 mousePos)

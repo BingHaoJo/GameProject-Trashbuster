@@ -7,11 +7,11 @@ public class SceneStateManager : ScriptableObject
     public static bool Level1Completed = false;
     public static bool Level2Completed = false;
     public static bool Level3Completed = false;
-    public static bool InLevelScene = false;
+    public static bool InLevelScene = true;
     
-    void Update()
+    public static void CheckInLevelScene()
     {
-        if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2" || SceneManager.GetActiveScene().name == "Level3")
+        if (SceneManager.GetActiveScene().name == "Level1" || SceneManager.GetActiveScene().name == "Level2" || SceneManager.GetActiveScene().name == "Level3_Vertical")
         {
             InLevelScene = true;
         }
