@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 enum BinType
@@ -17,12 +18,14 @@ public class TrashBinBase : MonoBehaviour
     [SerializeField] private GameObject trash;
     [SerializeField] private BinType binType = BinType.General;
     [SerializeField] private int completionThreshold = 3;
+    [SerializeField] private TMP_Text binText;
     private int currentTrashCount = 0;
     public bool isCompleted = false;
 
     void Start()
     {
         completionThreshold = trash.transform.childCount;
+        binText.text = binType.ToString();
     }
 
     void OnTriggerEnter2D(Collider2D collision)

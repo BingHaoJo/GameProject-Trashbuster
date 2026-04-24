@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3325736591821904550}
   - component: {fileID: 3494313877375123206}
-  - component: {fileID: 2811754179537445099}
+  - component: {fileID: 2000298744443368231}
   - component: {fileID: 3021756594297201896}
   - component: {fileID: 6742948658684509365}
   m_Layer: 8
@@ -84,8 +84,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 6444222685945297939, guid: fd36207a1564f274b9b418bfb83361ce, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -94,8 +94,8 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!58 &2811754179537445099
-CircleCollider2D:
+--- !u!60 &2000298744443368231
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -129,7 +129,39 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.98, y: 2.1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.4388728, y: 0.50752074}
+      - {x: 0.3379711, y: 0.6686477}
+      - {x: 0.2647885, y: 0.9359153}
+      - {x: 0.17433833, y: 1.0193241}
+      - {x: -0.32774636, y: 1.0295495}
+      - {x: -0.45250696, y: 0.85115457}
+      - {x: -0.44228083, y: 0.38974684}
+      - {x: -0.33070353, y: 0.21498606}
+      - {x: -0.2307035, y: 0.0854371}
+      - {x: -0.16717301, y: -0.100601666}
+      - {x: -0.14729479, y: -0.2822817}
+      - {x: -0.0807035, y: -0.36887297}
+      - {x: -0.08050171, y: -0.7960887}
+      - {x: -0.15741622, y: -0.7916673}
+      - {x: -0.17999999, y: -1.05}
+      - {x: 0.2286481, y: -1.043183}
+      - {x: 0.23591566, y: -0.79000014}
+      - {x: 0.16954844, y: -0.80090153}
+      - {x: 0.19176959, y: -0.24526878}
+      - {x: 0.2807549, y: 0.024178114}
+      - {x: 0.44569024, y: 0.27521148}
+  m_UseDelaunayMesh: 1
 --- !u!50 &3021756594297201896
 Rigidbody2D:
   serializedVersion: 5

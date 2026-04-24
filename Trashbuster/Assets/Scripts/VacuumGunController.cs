@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class VacuumGunController : MonoBehaviour
 {
     private float vacuumForce = 7f;
-    private float pushForce = 10f;
+    private float pushForce = 13f;
     private float shootForce = 2f;
     [SerializeField] private VacuumBarrel vacuumBarrel;
     [SerializeField] private GameObject Slot1;
