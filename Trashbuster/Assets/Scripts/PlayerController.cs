@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool ControlsDisabled = false;
     [SerializeField] private InputActionAsset playerInput;
     private float groundCheckAngle = 0f;
-    private Vector2 groundCheckSize = new Vector2(0.8f, 0.05f);
+    private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
 
     private InputAction moveAction;
     private InputAction jumpAction;
@@ -94,6 +94,8 @@ public class PlayerController : MonoBehaviour
         // }
 
         // print("Current State: " + currentState);
+
+        Debug.DrawLine(groundCheck.position, groundCheck.position + Vector3.right * groundCheckSize.x / 2f, Color.red);
 
         
     }
