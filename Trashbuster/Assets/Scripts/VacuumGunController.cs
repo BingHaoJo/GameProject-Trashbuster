@@ -28,7 +28,7 @@ public class VacuumGunController : MonoBehaviour
     private Camera mainCamera;
     private PlayerController player;
     private Vector2 mousePos;
-    private Vector3 worldPos;
+    public Vector3 worldPos;
     private Vector2 gunDir;
     private bool canPush = true;
     private float pushCooldown = 2f;
@@ -119,8 +119,10 @@ public class VacuumGunController : MonoBehaviour
     private void TriggerPush()
     {
         // Apply Push Force to push player
-        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f)
-        {            
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
+        && worldPos.x < player.transform.position.x + 1f && worldPos.x > player.transform.position.x - 1f)
+        {    
+            print("Pushed up!");        
             Vector2 pushDir = (worldPos - player.transform.position).normalized;
             player.ApplyPushForce(-pushForce, pushDir);
             canPush = false;
