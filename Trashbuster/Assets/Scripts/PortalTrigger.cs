@@ -7,11 +7,14 @@ public class PortalTrigger : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerController player;
     [SerializeField] private CapsuleCollider2D portalCollider;
+    [SerializeField] private AudioClip portalOpenSound;
+    [SerializeField] private AudioClip portalCloseSound;
     private string sceneName;
 
     void Start()
     {
         sceneName = SceneManager.GetActiveScene().name;
+        AudioManager.Instance.PlaySfx(portalOpenSound);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -21,6 +24,7 @@ public class PortalTrigger : MonoBehaviour
             animator.SetBool("PortalClose", true);
             animator.SetBool("PortalIdle", false);
             player.gameObject.SetActive(false);
+            AudioManager.Instance.PlaySfx(portalCloseSound);
         }
     }
 

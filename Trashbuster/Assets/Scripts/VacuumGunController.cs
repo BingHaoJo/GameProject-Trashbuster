@@ -9,9 +9,24 @@ using UnityEngine.UI;
 
 public class VacuumGunController : MonoBehaviour
 {
+    #region ForceValue
     private float vacuumForce = 7f;
     private float pushForce = 13f;
     private float shootForce = 2f;
+    #endregion
+    
+    #region Audio stuff
+    [Header("Audio")]
+    // Audio that works with the audio manager
+    [SerializeField] private AudioClip suckSound;
+    [SerializeField] private AudioClip collectSound;
+    // Audio that don't work with the audio manager because its used in Update/FixedUpdate
+    [SerializeField] private AudioSource shootAudio;
+    [SerializeField] private AudioSource pushAudio;
+    #endregion
+
+    #region Gun stuff
+    [Header("Gun")]
     [SerializeField] private VacuumBarrel vacuumBarrel;
     [SerializeField] private GameObject Slot1;
     [SerializeField] private GameObject Slot2;
@@ -23,6 +38,7 @@ public class VacuumGunController : MonoBehaviour
     private Queue<TrashBase> trashSlot4 = new Queue<TrashBase>();
     private List<Queue<TrashBase>> trashSlots;
     private Queue<TrashBase> currentSlot;
+    #endregion
 
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
@@ -33,7 +49,7 @@ public class VacuumGunController : MonoBehaviour
     private bool canPush = true;
     private float pushCooldown = 2f;
     private bool canShoot = true;
-    private float shootCooldown = 0.3f;
+    private float shootCooldown = 0.1f;
 
     private void OnEnable()
     {
@@ -69,7 +85,7 @@ public class VacuumGunController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
-        if (canShoot && currentSlot.Count > 0)
+        if (canShoot && currentSlot.Count > 0 && InputSystem.actions.FindAction("Shoot").IsPressed())
         {
             TriggerShoot();
         }
@@ -87,18 +103,40 @@ public class VacuumGunController : MonoBehaviour
     {
         TrashBase trash = collision.GetComponent<TrashBase>();
         Vector2 forceDir = ((Vector2)transform.position - (Vector2)collision.transform.position).normalized;
-
+        AudioSource suckAUSrc = AudioManager.Instance.GetAudioSource(suckSound);
         // Apply Vacuum Force on trash
-        if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Suck").IsPressed())
+        if (InputSystem.actions.FindAction("Suck").IsPressed())
         {
-            trash.ApplyVacuumForce(vacuumForce, forceDir);
+            if (trash != null)
+            {
+                trash.ApplyVacuumForce(vacuumForce, forceDir);
+            }
+            if (!suckAUSrc.isPlaying)
+            {
+                AudioManager.Instance.PlaySfx(suckSound, 0.3f);
+            }
+        }
+        else
+        {
+            if (suckAUSrc.isPlaying)
+            {
+                suckAUSrc.Stop();
+            }
+            
         }
 
         // Apply Push Force on trash
-        if (collision.CompareTag("Trash") && InputSystem.actions.FindAction("Push").IsPressed())
-        {
-            trash.ApplyVacuumForce(-pushForce, forceDir);
-        }
+        // if (InputSystem.actions.FindAction("Push").IsPressed() && canPush)
+        // {
+        //     if (trash != null)
+        //     {
+        //         trash.ApplyVacuumForce(-pushForce + 100f, forceDir);
+        //     }
+        //     canPush = false;
+        //     gunAUSrc.clip = pushSound;
+        //     gunAUSrc.Play();
+        //     StartCoroutine(PushCooldown());
+        // }
     }
 
     private void OnTrashCollected(TrashBase trash)
@@ -110,6 +148,7 @@ public class VacuumGunController : MonoBehaviour
             {
                 slot.Enqueue(trash);
                 trash.gameObject.SetActive(false);
+                AudioManager.Instance.PlaySfx(collectSound);
                 return;
             }
         }
@@ -126,23 +165,21 @@ public class VacuumGunController : MonoBehaviour
             Vector2 pushDir = (worldPos - player.transform.position).normalized;
             player.ApplyPushForce(-pushForce, pushDir);
             canPush = false;
+            pushAudio.Play();
             StartCoroutine(PushCooldown());
         }
     }
 
     private void TriggerShoot()
     {
-        if (InputSystem.actions.FindAction("Shoot").IsPressed())
-        {
-            GameObject newTrash = currentSlot.Dequeue().gameObject;
-            newTrash.transform.position = vacuumBarrel.transform.position;
-            newTrash.SetActive(true); // reuse collected trash
-            Vector2 shootDir = (worldPos - player.transform.position).normalized;
-            newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
-            canShoot = false;
-            StartCoroutine(ShootCooldown());
-        }
-
+        GameObject newTrash = currentSlot.Dequeue().gameObject;
+        newTrash.transform.position = vacuumBarrel.transform.position;
+        newTrash.SetActive(true); // reuse collected trash
+        Vector2 shootDir = (worldPos - player.transform.position).normalized;
+        newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
+        canShoot = false;
+        shootAudio.Play();
+        StartCoroutine(ShootCooldown());
     }
 
     private void SwitchHotBar()

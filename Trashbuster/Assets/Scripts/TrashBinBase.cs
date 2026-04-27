@@ -17,14 +17,12 @@ public class TrashBinBase : MonoBehaviour
 {
     [SerializeField] private GameObject trash;
     [SerializeField] private BinType binType = BinType.General;
-    [SerializeField] private int completionThreshold = 3;
     [SerializeField] private TMP_Text binText;
-    private int currentTrashCount = 0;
-    public bool isCompleted = false;
+    [SerializeField] private AudioSource depositedAudio;
+    public event Action OnTrashDeposited;
 
     void Start()
     {
-        completionThreshold = trash.transform.childCount;
         binText.text = binType.ToString();
     }
 
@@ -33,11 +31,6 @@ public class TrashBinBase : MonoBehaviour
         if (collision.CompareTag("Trash"))
         {
             TrashOrganizer(collision.GetComponent<TrashBase>());
-
-            if (currentTrashCount >= completionThreshold)
-            {
-                isCompleted = true;
-            }
         }
     }
 
@@ -45,21 +38,22 @@ public class TrashBinBase : MonoBehaviour
     {
         if (binType.ToString() == trash.trashType.ToString()) // if it's the same type, accept
         {
-            trash.gameObject.SetActive(false);
-            currentTrashCount++;
-            CompletionCheck.trashScore++;
+            TrashDeposited(trash);
         }
         else if (binType == BinType.Recycle && trash.trashType != TrashType.General) // If it's recyclable, accept
         {
-            trash.gameObject.SetActive(false);
-            currentTrashCount++;
-            CompletionCheck.trashScore++;
+            TrashDeposited(trash);
         }
         else if (binType == BinType.General) // If it's general, accept
         {
-            trash.gameObject.SetActive(false);
-            currentTrashCount++;
-            CompletionCheck.trashScore++;
+            TrashDeposited(trash);
         }
+    }
+
+    private void TrashDeposited(TrashBase trash)
+    {
+        trash.gameObject.SetActive(false);
+        depositedAudio.Play();
+        OnTrashDeposited.Invoke();
     }
 }

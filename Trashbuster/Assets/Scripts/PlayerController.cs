@@ -18,7 +18,7 @@ enum PlayerStates
 public class PlayerController : MonoBehaviour
 {
     private float walkSpeed = 13f;
-    private float jumpForce = 13f;
+    private float jumpForce = 14f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
@@ -26,9 +26,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool ControlsDisabled = false;
     [SerializeField] private InputActionAsset playerInput;
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioClip footStepsAudio;
+    [SerializeField] private AudioClip jumpAudio;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
 
+    private float stepTimer = 0.3f;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
@@ -64,12 +67,18 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         StateFunction();
+        
+        // Changing from falling state
+        if (currentState == PlayerStates.Falling && IsGrounded())
+            AudioManager.Instance.PlaySfx(footStepsAudio);
+
         moveInput = moveAction.ReadValue<Vector2>();
 
         if (jumpAction.IsPressed() && IsGrounded())
         {
             currentState = PlayerStates.Jumping;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            AudioManager.Instance.PlaySfx(jumpAudio);
         }
 
         if (rb.linearVelocityY < 0f && !IsGrounded())
@@ -84,7 +93,6 @@ public class PlayerController : MonoBehaviour
 
         }
 
-
         // print("Current State: " + currentState);
 
         Debug.DrawLine(groundCheck.position, groundCheck.position + Vector3.right * groundCheckSize.x / 2f, Color.red);
@@ -94,18 +102,19 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-        // Air horizontal control
+        // Moving on X axis
         if (moveInput.x != 0f && IsGrounded())
         {
             rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
             currentState = PlayerStates.Walking;
+            // StartCoroutine(Pause(1f));
         }
         else if (moveInput.x != 0f && !IsGrounded())
         {
             rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
         }
 
+        // Moving on Y axis
         if(moveInput.x == 0f && IsIdle())
         {
             rb.linearVelocity = Vector2.zero;
@@ -115,6 +124,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
         }
+        
 
     }
 
@@ -134,9 +144,9 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerStates.Idle;
     }
 
-    private bool AimingDown()
+    private void Pause()
     {
-        return (vacuumGunController.worldPos.x < transform.position.x - 1f) ? true : false;
+        AudioManager.Instance.PlaySfx(footStepsAudio);
     }
 
     private void StateFunction()
@@ -151,6 +161,30 @@ public class PlayerController : MonoBehaviour
                 if (IsGrounded())
                 {
                     animator.SetBool("isWalking", true);
+                    animator.SetBool("isFalling", false);
+                    // if (stepTimer > 0)
+                    // {
+                    //     if (stepTimer == 0.3f)
+                    //     {
+                    //         AudioManager.Instance.PlaySfx(footStepsAudio);
+                    //     }
+
+                    //     stepTimer -= Time.deltaTime;
+                    //     if (stepTimer <= 0)
+                    //     {
+                    //         stepTimer = 0.3f;
+                    //     }
+                    // }
+                    if (stepTimer > 0)
+                    {
+                        stepTimer -= Time.deltaTime;
+                        if (stepTimer <= 0)
+                        {
+                            AudioManager.Instance.PlaySfx(footStepsAudio);
+                            stepTimer = 0.3f;
+                        }
+                    }
+                // InvokeRepeating("Pause", 0.3f, 1f);
                 }
 
                 break;

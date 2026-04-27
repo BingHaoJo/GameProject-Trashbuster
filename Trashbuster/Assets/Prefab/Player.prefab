@@ -204,6 +204,8 @@ MonoBehaviour:
   ControlsDisabled: 0
   playerInput: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   animator: {fileID: 6408174423779964269}
+  footStepsAudio: {fileID: 8300000, guid: a939cf720354f6a40b254ab9e30e151b, type: 3}
+  jumpAudio: {fileID: 8300000, guid: 78aecc71b529b6b4897f97da34f1352a, type: 3}
 --- !u!1 &4387450820038344513
 GameObject:
   m_ObjectHideFlags: 0

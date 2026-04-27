@@ -168,3 +168,5 @@ MonoBehaviour:
   animator: {fileID: 932313478969135951}
   player: {fileID: 0}
   portalCollider: {fileID: 2009140486496272327}
+  portalOpenSound: {fileID: 8300000, guid: aa75ca8164304f043812a9e6771e39f3, type: 3}
+  portalCloseSound: {fileID: 8300000, guid: aff3ee34ee5349f43a8204d4bb46cb3d, type: 3}
