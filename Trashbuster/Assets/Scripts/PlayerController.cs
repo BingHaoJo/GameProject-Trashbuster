@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
 
-    private float stepTimer = 0.3f;
+    private float stepTimer = 0.5f;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
@@ -66,8 +66,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StateFunction();
-        
         // Changing from falling state
         if (currentState == PlayerStates.Falling && IsGrounded())
         {
@@ -104,12 +102,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        StateFunction();
+
         // Moving on X axis
         if (moveInput.x != 0f && IsGrounded())
         {
             rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
             currentState = PlayerStates.Walking;
-            // StartCoroutine(Pause(1f));
         }
         else if (moveInput.x != 0f && !IsGrounded())
         {
@@ -126,7 +125,16 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
         }
-        
+
+        if (currentState == PlayerStates.Walking && !gameObject.GetComponent<AudioSource>().isPlaying)
+        {
+            gameObject.GetComponent<AudioSource>().Play();
+        }
+        else if(currentState != PlayerStates.Walking && gameObject.GetComponent<AudioSource>().isPlaying)
+        {
+            gameObject.GetComponent<AudioSource>().Stop();
+        }
+    
 
     }
 
@@ -164,47 +172,28 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.SetBool("isWalking", true);
                     animator.SetBool("isFalling", false);
-                    // if (stepTimer > 0)
-                    // {
-                    //     if (stepTimer == 0.3f)
-                    //     {
-                    //         AudioManager.Instance.PlaySfx(footStepsAudio);
-                    //     }
-
-                    //     stepTimer -= Time.deltaTime;
-                    //     if (stepTimer <= 0)
-                    //     {
-                    //         stepTimer = 0.3f;
-                    //     }
-                    // }
-                    if (stepTimer > 0)
-                    {
-                        stepTimer -= Time.deltaTime;
-                        if (stepTimer <= 0)
-                        {
-                            AudioManager.Instance.PlaySfx(footStepsAudio);
-                            stepTimer = 0.3f;
-                        }
-                    }
-                // InvokeRepeating("Pause", 0.3f, 1f);
                 }
 
                 break;
             case PlayerStates.Jumping:
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isJumping", true);
+                print("jumping");
                 break;
             case PlayerStates.Falling:
                 animator.SetBool("isFalling", true);
                 animator.SetBool("isJumping", false);
                 animator.SetBool("isPushUp", false);
+                animator.SetBool("isWalking", false);
                 animator.SetBool("isPushSides", false);
+                print("falling");
                 break;
             case PlayerStates.ForcePushedUp:
                 animator.SetBool("isPushUp", true);
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isFalling", false);
                 animator.SetBool("isJumping", false);
+                print("force");
                 break;
         }
     }

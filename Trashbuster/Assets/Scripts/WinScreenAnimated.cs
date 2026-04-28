@@ -28,6 +28,7 @@ public class WinScreenAnimated : MonoBehaviour
             {
                 score++;
                 scoreAmountText.text = score.ToString();
+                gameObject.GetComponent<AudioSource>().Play();
                 timer = 0.01f;
             }
         }
