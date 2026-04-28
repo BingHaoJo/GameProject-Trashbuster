@@ -10,11 +10,13 @@ public class PortalTrigger : MonoBehaviour
     [SerializeField] private AudioClip portalOpenSound;
     [SerializeField] private AudioClip portalCloseSound;
     private string sceneName;
+    public bool nextLevel = false;
 
     void Start()
     {
         sceneName = SceneManager.GetActiveScene().name;
         AudioManager.Instance.PlaySfx(portalOpenSound);
+        player.gameObject.SetActive(false);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -30,28 +32,47 @@ public class PortalTrigger : MonoBehaviour
 
     public void ChangeScene()
     {
-        if (sceneName == "Level1")
+        if (sceneName == "Level1" && nextLevel)
         {
             SceneManager.LoadScene("Level2");
             SceneStateManager.Level1Completed = true;
         }
-        else if (sceneName == "Level2")
+        else if (sceneName == "Level2" && nextLevel)
         {
             SceneManager.LoadScene("Level3_Vertical");
             SceneStateManager.Level2Completed = true;
         }
-        else if (sceneName == "Level3_Vertical")
+        else if (sceneName == "Level3_Vertical" && nextLevel)
         {
             SceneManager.LoadScene("WinScreen");
             SceneStateManager.Level3Completed = true;
         }
+
+        if (!nextLevel)
+        {
+            gameObject.SetActive(false);
+        }
+
     }
 
     public void PortalIdle()
     {
-        portalCollider.enabled = true;
-        animator.SetBool("PortalOpen", false);
-        animator.SetBool("PortalIdle", true);
+        if (nextLevel || sceneName == "WinScreen")
+        {
+            portalCollider.enabled = true;
+            animator.SetBool("PortalIdle", true);
+            player.gameObject.SetActive(true);
+        }
+        else
+        {
+            // Close Portal
+            player.gameObject.SetActive(true);
+            animator.SetBool("PortalClose", true);
+            AudioManager.Instance.PlaySfx(portalCloseSound);
+        }
+
     }
+
+    
 
 }

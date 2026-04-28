@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CompletionCheck : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class CompletionCheck : MonoBehaviour
         if (currentTrashCount >= completionThreshold)
         {
             portal.gameObject.SetActive(true);
+            portal.nextLevel = true;
         }
 
     }

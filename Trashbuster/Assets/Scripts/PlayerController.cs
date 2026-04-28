@@ -70,7 +70,9 @@ public class PlayerController : MonoBehaviour
         
         // Changing from falling state
         if (currentState == PlayerStates.Falling && IsGrounded())
+        {
             AudioManager.Instance.PlaySfx(footStepsAudio);
+        }
 
         moveInput = moveAction.ReadValue<Vector2>();
 

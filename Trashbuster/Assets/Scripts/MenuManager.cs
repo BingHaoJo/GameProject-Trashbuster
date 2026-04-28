@@ -11,11 +11,16 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         if (GameObject.Find("MainMenuUI") != null)
+        {
             MainMenuUI = GameObject.Find("MainMenuUI");
+        }
 
         if (GameObject.Find("LevelSelectUI") != null)
+        {
             LevelSelectUI = GameObject.Find("LevelSelectUI");
+            print(LevelSelectUI);
             LevelSelectUI.SetActive(false);
+        }
     }
     
     void Update()
@@ -63,10 +68,14 @@ public class MenuManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySfx(pressSound);
         if (SceneManager.GetActiveScene().name == "WinScreen")
+        {
             SceneStateManager.LoadScene("MainMenu");
+        }
         else if (SceneManager.GetActiveScene().name == "MainMenu" && LevelSelectUI.activeSelf)
+        {
             MainMenuUI.SetActive(true);
             LevelSelectUI.SetActive(false);
+        }
     }
 
     public void Level1ButtonFunction()

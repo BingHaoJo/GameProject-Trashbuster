@@ -142,9 +142,11 @@ public class VacuumGunController : MonoBehaviour
     private void OnTrashCollected(TrashBase trash)
     {
         // Object pooling trash collection into hotbar slots
+
+        // Check if there are a slot with the same type of trash in it already
         foreach (Queue<TrashBase> slot in trashSlots)
         {
-            if (slot.Count < 1 || slot.Peek().trashType == trash.trashType)
+            if (slot.Count > 0 && slot.Peek().trashType == trash.trashType)
             {
                 slot.Enqueue(trash);
                 trash.gameObject.SetActive(false);
@@ -152,8 +154,19 @@ public class VacuumGunController : MonoBehaviour
                 return;
             }
         }
-        // all slots full with different trash types, cannot collect
-    }
+
+        // If don't found any same trash type, find an empty slot to enqueue
+        foreach (Queue<TrashBase> slot in trashSlots)
+        {
+            if (slot.Count < 1)
+            {
+                slot.Enqueue(trash);
+                trash.gameObject.SetActive(false);
+                AudioManager.Instance.PlaySfx(collectSound);
+                return;
+            }
+        }
+}
 
     private void TriggerPush()
     {

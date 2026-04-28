@@ -30,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -1, w: 0}
   m_LocalPosition: {x: -2.58, y: -0.89, z: 0}
-  m_LocalScale: {x: 9.671329, y: 9.160361, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 180, y: 180, z: 0}
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   animator: {fileID: 932313478969135951}
-  player: {fileID: 0}
+  player: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
   portalCollider: {fileID: 2009140486496272327}
   portalOpenSound: {fileID: 8300000, guid: aa75ca8164304f043812a9e6771e39f3, type: 3}
   portalCloseSound: {fileID: 8300000, guid: aff3ee34ee5349f43a8204d4bb46cb3d, type: 3}
