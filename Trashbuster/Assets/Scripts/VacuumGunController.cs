@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -32,6 +33,7 @@ public class VacuumGunController : MonoBehaviour
     [SerializeField] private GameObject Slot2;
     [SerializeField] private GameObject Slot3;
     [SerializeField] private GameObject Slot4;
+    [SerializeField] public GameObject AirPushBar;
     private Queue<TrashBase> trashSlot1 = new Queue<TrashBase>();
     private Queue<TrashBase> trashSlot2 = new Queue<TrashBase>();
     private Queue<TrashBase> trashSlot3 = new Queue<TrashBase>();
@@ -40,16 +42,20 @@ public class VacuumGunController : MonoBehaviour
     private Queue<TrashBase> currentSlot;
     #endregion
 
+    #region Cooldown
+    private bool canPush = true;
+    private float pushCooldown = 2f;
+    private float countingCooldown = 0;
+    private bool canShoot = true;
+    private float shootCooldown = 0.1f;
+    #endregion
+
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
     private Vector2 mousePos;
     public Vector3 worldPos;
     private Vector2 gunDir;
-    private bool canPush = true;
-    private float pushCooldown = 2f;
-    private bool canShoot = true;
-    private float shootCooldown = 0.1f;
 
     private void OnEnable()
     {
@@ -73,29 +79,49 @@ public class VacuumGunController : MonoBehaviour
     }
 
     // Update is called once per frame
+    void Update()
+    {
+        // UI stuff
+        SwitchHotBar();
+        if (SceneStateManager.InLevelScene)
+        {
+            UIHotBar();
+            UIAirPush();
+            if (!canPush)
+            {
+                AirPushBar.transform.GetChild(1).gameObject.SetActive(true);
+            }
+            else
+            {
+                countingCooldown = pushCooldown;
+                AirPushBar.transform.GetChild(1).gameObject.SetActive(false);
+            }
+        }
+    }
+
+
     void FixedUpdate()
     {   
         // Get mouse position in world space
         mousePos = Mouse.current.position.ReadValue();
         worldPos = mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 10f));
         gunDir = (worldPos - transform.position).normalized;
-
         // Rotate gun to look at mouse
         float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
         mousePositionUpdated?.Invoke(worldPos); // signal emitted
+
 
         if (canShoot && currentSlot.Count > 0 && InputSystem.actions.FindAction("Shoot").IsPressed())
         {
             TriggerShoot();
         }
 
-        TriggerPush();
-        
-        SwitchHotBar();
-        if (SceneStateManager.InLevelScene)
+
+        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
+        && worldPos.x < player.transform.position.x + 1f && worldPos.x > player.transform.position.x - 1f)
         {
-            UIHotBar();
+            TriggerPush();
         }
     }
 
@@ -170,17 +196,13 @@ public class VacuumGunController : MonoBehaviour
 
     private void TriggerPush()
     {
-        // Apply Push Force to push player
-        if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
-        && worldPos.x < player.transform.position.x + 1f && worldPos.x > player.transform.position.x - 1f)
-        {    
-            print("Pushed up!");        
-            Vector2 pushDir = (worldPos - player.transform.position).normalized;
-            player.ApplyPushForce(-pushForce, pushDir);
-            canPush = false;
-            pushAudio.Play();
-            StartCoroutine(PushCooldown());
-        }
+        // Apply Push Force to push player  
+        print("Pushed up!");        
+        Vector2 pushDir = (worldPos - player.transform.position).normalized;
+        player.ApplyPushForce(-pushForce, pushDir);
+        canPush = false;
+        pushAudio.Play();
+        StartCoroutine(PushCooldown());
     }
 
     private void TriggerShoot()
@@ -234,6 +256,18 @@ public class VacuumGunController : MonoBehaviour
         Slot2.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot2.Count > 0) ? trashSlot2.Count.ToString() : "";
         Slot3.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot3.Count > 0) ? trashSlot3.Count.ToString() : "";
         Slot4.transform.GetChild(1).GetComponent<TMP_Text>().text = (trashSlot4.Count > 0) ? trashSlot4.Count.ToString() : "";
+    }
+
+    private void UIAirPush()
+    {
+        AirPushBar.GetComponent<Image>().color = (canPush) ? Color.blue : Color.gray;
+        AirPushBar.transform.GetChild(0).GetComponent<Image>().color = (canPush) ? Color.white : Color.darkGray;
+
+        if (!canPush)
+        {
+            countingCooldown -= Time.deltaTime;
+            AirPushBar.transform.GetChild(1).GetComponent<TMP_Text>().text = ((int)countingCooldown).ToString(); 
+        }
     }
 
     private IEnumerator PushCooldown()
