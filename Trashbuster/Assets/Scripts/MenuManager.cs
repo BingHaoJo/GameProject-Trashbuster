@@ -7,6 +7,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private AudioClip pressSound;
     private GameObject MainMenuUI;
     private GameObject LevelSelectUI;
+    private GameObject CreditsUI;
     
     void Start()
     {
@@ -18,31 +19,32 @@ public class MenuManager : MonoBehaviour
         if (GameObject.Find("LevelSelectUI") != null)
         {
             LevelSelectUI = GameObject.Find("LevelSelectUI");
-            print(LevelSelectUI);
             LevelSelectUI.SetActive(false);
+        }
+        
+        if (GameObject.Find("CreditsUI") != null)
+        {
+            CreditsUI = GameObject.Find("CreditsUI");
+            CreditsUI.SetActive(false);
         }
     }
     
     void Update()
     {
-        if (LevelSelectUI != null)
+        if (LevelSelectUI != null && LevelSelectUI.activeSelf)
         {
-            if (LevelSelectUI.activeSelf)
+            if (SceneStateManager.Level2Completed)
             {
-                if (SceneStateManager.Level2Completed)
-                {
-                    // Unlock Level 3 button
-                    GameObject.Find("Level2Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
-                }
+                // Unlock Level 3 button
+                GameObject.Find("Level2Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
+            }
 
-                if (SceneStateManager.Level3Completed)
-                {
-                    // Unlock Level 2 button
-                    GameObject.Find("Level3Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
-                }
+            if (SceneStateManager.Level3Completed)
+            {
+                // Unlock Level 2 button
+                GameObject.Find("Level3Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
             }
         }
-        
     }
 
     public void PlayButtonFunction()
@@ -55,7 +57,8 @@ public class MenuManager : MonoBehaviour
     public void CreditsButtonFunction()
     {
         AudioManager.Instance.PlaySfx(pressSound);
-        SceneStateManager.LoadScene("Credits");
+        MainMenuUI.SetActive(false);
+        CreditsUI.SetActive(true);
     }
     
     public void QuitButtonFunction()
@@ -71,10 +74,11 @@ public class MenuManager : MonoBehaviour
         {
             SceneStateManager.LoadScene("MainMenu");
         }
-        else if (SceneManager.GetActiveScene().name == "MainMenu" && LevelSelectUI.activeSelf)
+        else if (SceneManager.GetActiveScene().name == "MainMenu" && (LevelSelectUI.activeSelf || CreditsUI.activeSelf))
         {
             MainMenuUI.SetActive(true);
             LevelSelectUI.SetActive(false);
+            CreditsUI.SetActive(false);
         }
     }
 

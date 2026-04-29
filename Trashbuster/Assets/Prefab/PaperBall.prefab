@@ -191,4 +191,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrashBase
   trashType: 2
   rb: {fileID: 8111542724518783208}
-  player: {fileID: 9031827607015571744, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
+  player: {fileID: 1562078940297707349, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}

@@ -119,7 +119,7 @@ public class VacuumGunController : MonoBehaviour
 
 
         if (InputSystem.actions.FindAction("Push").IsPressed() && canPush && worldPos.y < player.transform.position.y - 1f
-        && worldPos.x < player.transform.position.x + 1f && worldPos.x > player.transform.position.x - 1f)
+        && worldPos.x < player.transform.position.x + 3f && worldPos.x > player.transform.position.x - 3f)
         {
             TriggerPush();
         }

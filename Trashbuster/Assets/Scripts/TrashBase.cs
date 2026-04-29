@@ -14,8 +14,12 @@ public class TrashBase : MonoBehaviour
 {
     public TrashType trashType = TrashType.Plastic;
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private PlayerController player;
+    private GameObject player;
 
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
 
     private float ToPlayerDist()
     {

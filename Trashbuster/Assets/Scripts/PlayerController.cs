@@ -30,8 +30,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip jumpAudio;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
-
-    private float stepTimer = 0.5f;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
@@ -66,11 +64,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Changing from falling state
-        if (currentState == PlayerStates.Falling && IsGrounded())
-        {
-            AudioManager.Instance.PlaySfx(footStepsAudio);
-        }
+        // // Changing from falling state
+        // if (currentState == PlayerStates.Falling && IsGrounded())
+        // {
+        //     AudioManager.Instance.PlaySfx(footStepsAudio, 0.3f);
+        // }
 
         moveInput = moveAction.ReadValue<Vector2>();
 
@@ -78,7 +76,7 @@ public class PlayerController : MonoBehaviour
         {
             currentState = PlayerStates.Jumping;
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            AudioManager.Instance.PlaySfx(jumpAudio);
+            AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
         }
 
         if (rb.linearVelocityY < 0f && !IsGrounded())
@@ -178,7 +176,6 @@ public class PlayerController : MonoBehaviour
             case PlayerStates.Jumping:
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isJumping", true);
-                print("jumping");
                 break;
             case PlayerStates.Falling:
                 animator.SetBool("isFalling", true);
@@ -186,14 +183,12 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isPushUp", false);
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isPushSides", false);
-                print("falling");
                 break;
             case PlayerStates.ForcePushedUp:
                 animator.SetBool("isPushUp", true);
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isFalling", false);
                 animator.SetBool("isJumping", false);
-                print("force");
                 break;
         }
     }
