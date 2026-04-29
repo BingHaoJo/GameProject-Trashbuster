@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip jumpAudio;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
+    private bool keepMomentum = false;
     private InputAction moveAction;
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
@@ -107,6 +108,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
             currentState = PlayerStates.Walking;
+            keepMomentum = false;
         }
         else if (moveInput.x != 0f && !IsGrounded())
         {
@@ -118,12 +120,20 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = Vector2.zero;
             currentState = PlayerStates.Idle;
+            keepMomentum = false;
         }
-        else if (moveInput.x == 0f && !IsIdle())
+        else if (moveInput.x == 0f && !IsIdle() && !keepMomentum)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
         }
 
+        // Disable stopping momentum mid air
+        if (InputSystem.actions.FindAction("Push").IsPressed())
+        {
+            keepMomentum = true;
+        }
+
+        // Playing walking sound
         if (currentState == PlayerStates.Walking && !gameObject.GetComponent<AudioSource>().isPlaying)
         {
             gameObject.GetComponent<AudioSource>().Play();
@@ -176,6 +186,7 @@ public class PlayerController : MonoBehaviour
             case PlayerStates.Jumping:
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isJumping", true);
+                animator.SetBool("isFalling", false);
                 break;
             case PlayerStates.Falling:
                 animator.SetBool("isFalling", true);

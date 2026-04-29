@@ -175,7 +175,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &-7101829974312598329
 MonoBehaviour:
@@ -191,4 +191,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrashBase
   trashType: 2
   rb: {fileID: 8111542724518783208}
-  player: {fileID: 1562078940297707349, guid: 0ffdc299c1f07324fa918581e479244a, type: 3}
