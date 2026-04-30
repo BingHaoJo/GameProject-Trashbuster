@@ -22,7 +22,7 @@ public class CompletionCheck : MonoBehaviour
 
     void Start()
     {
-        // completionThreshold = trash.transform.childCount;
+        completionThreshold = trash.transform.childCount;
     }
 
     // Update is called once per frame
