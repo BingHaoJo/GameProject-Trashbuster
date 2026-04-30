@@ -10,7 +10,6 @@ public class WinScreenAnimated : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text scoreAmountText;
     [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button quitButton;
     [SerializeField] private TMP_Text creditsText;
 
     float timer = 0.01f;
@@ -52,7 +51,6 @@ public class WinScreenAnimated : MonoBehaviour
     private void ButtonActive()
     {
         mainMenuButton.gameObject.SetActive(true);
-        quitButton.gameObject.SetActive(true);
         creditsText.gameObject.SetActive(true);
     }
 }
