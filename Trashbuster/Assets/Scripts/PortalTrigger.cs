@@ -7,26 +7,29 @@ public class PortalTrigger : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerController player;
     [SerializeField] private CapsuleCollider2D portalCollider;
-    [SerializeField] private AudioClip portalOpenSound;
-    [SerializeField] private AudioClip portalCloseSound;
+    [SerializeField] private AudioSource portalOpenSound;
+    [SerializeField] private AudioSource portalCloseSound;
     private string sceneName;
     public bool nextLevel = false;
 
     void Start()
     {
         sceneName = SceneManager.GetActiveScene().name;
-        AudioManager.Instance.PlaySfx(portalOpenSound);
+        PortalOpen();
         player.gameObject.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        PortalOpen();
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player") && sceneName != "WinScreen")
         {
-            animator.SetBool("PortalClose", true);
-            animator.SetBool("PortalIdle", false);
+            PortalClose();
             player.gameObject.SetActive(false);
-            AudioManager.Instance.PlaySfx(portalCloseSound);
         }
     }
 
@@ -48,7 +51,7 @@ public class PortalTrigger : MonoBehaviour
             SceneStateManager.Level3Completed = true;
         }
 
-        if (!nextLevel)
+        if (!nextLevel)// Deactivate portal after layer enter scene
         {
             gameObject.SetActive(false);
         }
@@ -57,7 +60,7 @@ public class PortalTrigger : MonoBehaviour
 
     public void PortalIdle()
     {
-        if (nextLevel || sceneName == "WinScreen")
+        if (nextLevel || sceneName == "WinScreen")// Portal idle ready to next level or idle in winsceen
         {
             portalCollider.enabled = true;
             animator.SetBool("PortalIdle", true);
@@ -65,14 +68,24 @@ public class PortalTrigger : MonoBehaviour
         }
         else
         {
-            // Close Portal
+            // Close Portal after player enter scene
             player.gameObject.SetActive(true);
-            animator.SetBool("PortalClose", true);
-            AudioManager.Instance.PlaySfx(portalCloseSound);
+            PortalClose();
         }
 
     }
 
-    
+    public void PortalOpen()
+    {
+        animator.SetBool("PortalClose", false);
+        animator.SetBool("PortalIdle", false);
+        portalOpenSound.Play();
+    }
 
+    public void PortalClose()
+    {
+        animator.SetBool("PortalClose", true);
+        animator.SetBool("PortalIdle", false);
+        portalCloseSound.Play();
+    }
 }

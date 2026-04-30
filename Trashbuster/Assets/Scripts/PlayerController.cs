@@ -113,6 +113,7 @@ public class PlayerController : MonoBehaviour
         else if (moveInput.x != 0f && !IsGrounded())
         {
             rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+            keepMomentum = false;
         }
 
         // Moving on Y axis

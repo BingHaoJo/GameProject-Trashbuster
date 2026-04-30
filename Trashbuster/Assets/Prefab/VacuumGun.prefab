@@ -45,7 +45,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 6fdbc168c4150a24ebfe5c6aaabc5932, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -271,6 +271,7 @@ MonoBehaviour:
   Slot2: {fileID: 0}
   Slot3: {fileID: 0}
   Slot4: {fileID: 0}
+  AirPushBar: {fileID: 0}
   worldPos: {x: 0, y: 0, z: 0}
 --- !u!60 &7628760883208751007
 PolygonCollider2D:
