@@ -1,6 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameStates
+{
+    MainMenu,
+    LevelSelect,
+    Credits,
+    Level1,
+    Level2,
+    Level3,
+    Winscreen
+}
+
 [CreateAssetMenu(fileName = "SceneStateManager", menuName = "Scriptable Objects/SceneStateManager")]
 public class SceneStateManager : ScriptableObject
 {
@@ -10,9 +21,9 @@ public class SceneStateManager : ScriptableObject
     public static bool InLevelScene = true;
     public static GameStates currentGameStates = GameStates.MainMenu;
 
-    public static void CheckInLevelScene()
+    public static void CheckInLevelScene(Scene scene)
     {
-        if (currentGameStates == GameStates.Level1 || currentGameStates == GameStates.Level2 || currentGameStates == GameStates.Level3)
+        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3")
         {
             InLevelScene = true;
         }
@@ -20,10 +31,5 @@ public class SceneStateManager : ScriptableObject
         {
             InLevelScene = false;
         }
-    }
-
-    public static void LoadScene(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
     }
 }

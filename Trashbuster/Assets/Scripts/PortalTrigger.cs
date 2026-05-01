@@ -9,12 +9,10 @@ public class PortalTrigger : MonoBehaviour
     [SerializeField] private CapsuleCollider2D portalCollider;
     [SerializeField] private AudioSource portalOpenSound;
     [SerializeField] private AudioSource portalCloseSound;
-    private string sceneName;
     public bool nextLevel = false;
 
     void Start()
     {
-        sceneName = SceneManager.GetActiveScene().name;
         PortalOpen();
         player.gameObject.SetActive(false);
     }
@@ -26,7 +24,7 @@ public class PortalTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && sceneName != "WinScreen")
+        if (collision.CompareTag("Player") && SceneStateManager.currentGameStates != GameStates.Winscreen)
         {
             PortalClose();
             player.gameObject.SetActive(false);
@@ -35,21 +33,23 @@ public class PortalTrigger : MonoBehaviour
 
     public void ChangeScene()
     {
-        if (sceneName == "Level1" && nextLevel)
+        if (SceneStateManager.currentGameStates == GameStates.Level1 && nextLevel)
         {
-            SceneManager.LoadScene("Level2");
             SceneStateManager.Level1Completed = true;
+            SceneStateManager.currentGameStates = GameStates.Level2;
+            SceneManager.LoadScene("Level2");
         }
-        else if (sceneName == "Level2" && nextLevel)
+        else if (SceneStateManager.currentGameStates == GameStates.Level2 && nextLevel)
         {
             SceneStateManager.Level2Completed = true;
             SceneStateManager.currentGameStates = GameStates.Level3;
-            SceneManager.LoadScene("Level3_Vertical");
+            SceneManager.LoadScene("Level3");
         }
-        else if (sceneName == "Level3_Vertical" && nextLevel)
+        else if (SceneStateManager.currentGameStates == GameStates.Level3 && nextLevel)
         {
-            SceneManager.LoadScene("WinScreen");
             SceneStateManager.Level3Completed = true;
+            SceneStateManager.currentGameStates = GameStates.Winscreen;
+            SceneManager.LoadScene("WinScreen");
         }
 
         if (!nextLevel)// Deactivate portal after layer enter scene
@@ -61,7 +61,7 @@ public class PortalTrigger : MonoBehaviour
 
     public void PortalIdle()
     {
-        if (nextLevel || sceneName == "WinScreen")// Portal idle ready to next level or idle in winsceen
+        if (nextLevel || SceneStateManager.currentGameStates == GameStates.Winscreen)// Portal idle ready to next level or idle in winsceen
         {
             portalCollider.enabled = true;
             animator.SetBool("PortalIdle", true);

@@ -11,6 +11,15 @@ public class MenuManager : MonoBehaviour
     
     void Start()
     {
+        foreach(GameStates state in Enum.GetValues(typeof(GameStates)))// Recorrect currentGameStates
+        {
+            if (SceneManager.GetActiveScene().name == state.ToString())
+            {
+                SceneStateManager.currentGameStates = state;
+                break;
+            }
+        }
+
         if (GameObject.Find("MainMenuUI") != null)
         {
             MainMenuUI = GameObject.Find("MainMenuUI");
@@ -31,7 +40,7 @@ public class MenuManager : MonoBehaviour
     
     void Update()
     {
-        if (LevelSelectUI != null && LevelSelectUI.activeSelf)
+        if (SceneStateManager.currentGameStates == GameStates.LevelSelect)
         {
             if (SceneStateManager.Level2Completed)
             {
@@ -52,6 +61,7 @@ public class MenuManager : MonoBehaviour
         AudioManager.Instance.PlaySfx(pressSound);
         MainMenuUI.SetActive(false);
         LevelSelectUI.SetActive(true);
+        SceneStateManager.currentGameStates = GameStates.LevelSelect;
     }
 
     public void CreditsButtonFunction()
@@ -59,44 +69,44 @@ public class MenuManager : MonoBehaviour
         AudioManager.Instance.PlaySfx(pressSound);
         MainMenuUI.SetActive(false);
         CreditsUI.SetActive(true);
-    }
-    
-    public void QuitButtonFunction()
-    {
-        AudioManager.Instance.PlaySfx(pressSound);
-        Application.Quit();
+        SceneStateManager.currentGameStates = GameStates.Credits;
     }
 
     public void MainMenuButtonFunction()
     {
         AudioManager.Instance.PlaySfx(pressSound);
-        if (SceneManager.GetActiveScene().name == "WinScreen")
+        if (SceneStateManager.currentGameStates == GameStates.Winscreen)
         {
-            SceneStateManager.LoadScene("MainMenu");
+            SceneStateManager.currentGameStates = GameStates.MainMenu;
+            SceneManager.LoadScene("MainMenu");
         }
-        else if (SceneManager.GetActiveScene().name == "MainMenu" && (LevelSelectUI.activeSelf || CreditsUI.activeSelf))
+        else if (SceneStateManager.currentGameStates == GameStates.LevelSelect || SceneStateManager.currentGameStates == GameStates.Credits)
         {
             MainMenuUI.SetActive(true);
             LevelSelectUI.SetActive(false);
             CreditsUI.SetActive(false);
+            SceneStateManager.currentGameStates = GameStates.MainMenu;
         }
     }
 
     public void Level1ButtonFunction()
     {
+        SceneStateManager.currentGameStates = GameStates.Level1;
         AudioManager.Instance.PlaySfx(pressSound);
-        SceneStateManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level1");
     }
 
     public void Level2ButtonFunction()
     {
+        SceneStateManager.currentGameStates = GameStates.Level2;
         AudioManager.Instance.PlaySfx(pressSound);
-        SceneStateManager.LoadScene("Level2");
+        SceneManager.LoadScene("Level2");
     }
 
     public void Level3ButtonFunction()
     {
+        SceneStateManager.currentGameStates = GameStates.Level3;
         AudioManager.Instance.PlaySfx(pressSound);
-        SceneStateManager.LoadScene("Level3");
+        SceneManager.LoadScene("Level3");
     }
 }

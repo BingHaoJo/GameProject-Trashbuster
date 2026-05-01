@@ -1,4 +1,6 @@
+using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,6 +11,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private int completionThreshold = 3;
     [SerializeField] private GameObject trash;
+    [SerializeField] private bool isManualThreshold;
     private int currentTrashCount = 0;
     public static int trashScore = 0;
 
@@ -22,7 +25,18 @@ public class CompletionCheck : MonoBehaviour
 
     void Start()
     {
-        // completionThreshold = trash.transform.childCount;
+        if (!isManualThreshold)
+        {
+            completionThreshold = trash.transform.childCount;
+        }
+        foreach(GameStates state in Enum.GetValues(typeof(GameStates)))
+        {
+            if (SceneManager.GetActiveScene().name == state.ToString())
+            {
+                SceneStateManager.currentGameStates = state;
+                break;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -45,7 +59,4 @@ public class CompletionCheck : MonoBehaviour
         currentTrashCount++;
         trashScore++;
     }
-
-
-
 }

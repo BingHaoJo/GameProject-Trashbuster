@@ -188,7 +188,7 @@ public class VacuumGunController : MonoBehaviour
             {
                 slot.Enqueue(trash);
                 trash.gameObject.SetActive(false);
-                AudioManager.Instance.PlaySfx(collectSound);
+                AudioManager.Instance.PlaySfx(collectSound, 0.3f);
                 return;
             }
         }
