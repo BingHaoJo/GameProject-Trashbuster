@@ -11,13 +11,13 @@ public class WinScreenAnimated : MonoBehaviour
     [SerializeField] private TMP_Text scoreAmountText;
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private TMP_Text creditsText;
-
+    [SerializeField] private int finalScore = CompletionCheck.trashScore;
     float timer = 0.01f;
     private int score = 0;
 
     private void Update()
     {
-        if (score < CompletionCheck.trashScore && scoreAmountText.gameObject.activeSelf)
+        if (score < finalScore && scoreAmountText.gameObject.activeSelf)// Score count up
         {
             if (timer > 0)
             {
@@ -31,7 +31,7 @@ public class WinScreenAnimated : MonoBehaviour
                 timer = 0.01f;
             }
         }
-        else if (score >= CompletionCheck.trashScore && scoreAmountText.gameObject.activeSelf)
+        else if (score >= finalScore && scoreAmountText.gameObject.activeSelf)
         {
             ButtonActive();
         }

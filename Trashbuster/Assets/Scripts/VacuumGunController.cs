@@ -65,7 +65,6 @@ public class VacuumGunController : MonoBehaviour
         }
     }
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -148,21 +147,7 @@ public class VacuumGunController : MonoBehaviour
             {
                 suckAUSrc.Stop();
             }
-            
         }
-
-        // Apply Push Force on trash
-        // if (InputSystem.actions.FindAction("Push").IsPressed() && canPush)
-        // {
-        //     if (trash != null)
-        //     {
-        //         trash.ApplyVacuumForce(-pushForce + 100f, forceDir);
-        //     }
-        //     canPush = false;
-        //     gunAUSrc.clip = pushSound;
-        //     gunAUSrc.Play();
-        //     StartCoroutine(PushCooldown());
-        // }
     }
 
     private void OnTrashCollected(TrashBase trash)
@@ -176,7 +161,7 @@ public class VacuumGunController : MonoBehaviour
             {
                 slot.Enqueue(trash);
                 trash.gameObject.SetActive(false);
-                AudioManager.Instance.PlaySfx(collectSound);
+                AudioManager.Instance.PlaySfx(collectSound, 0.3f);
                 return;
             }
         }

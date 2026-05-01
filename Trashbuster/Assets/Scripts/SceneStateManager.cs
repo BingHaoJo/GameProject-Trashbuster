@@ -21,9 +21,9 @@ public class SceneStateManager : ScriptableObject
     public static bool InLevelScene = true;
     public static GameStates currentGameStates = GameStates.MainMenu;
 
-    public static void CheckInLevelScene()
+    public static void CheckInLevelScene(Scene scene)
     {
-        if (currentGameStates == GameStates.Level1 || currentGameStates == GameStates.Level2 || currentGameStates == GameStates.Level3)
+        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3")
         {
             InLevelScene = true;
         }
