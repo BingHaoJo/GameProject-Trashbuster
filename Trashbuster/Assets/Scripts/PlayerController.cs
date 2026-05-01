@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour
         if (rb.linearVelocityY < 0f && !IsGrounded())
         {
             currentState = PlayerStates.Falling;
+
         }
 
         if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
@@ -206,7 +207,7 @@ public class PlayerController : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3")
+        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3_Vertical")
         {
             ControlsDisabled = false; // enable player controls when scene is loaded
         }
@@ -215,7 +216,7 @@ public class PlayerController : MonoBehaviour
             ControlsDisabled = true; // disable player controls for other scenes
         }
 
-        SceneStateManager.CheckInLevelScene(scene);
+        SceneStateManager.CheckInLevelScene();
     }
 
     void OnMousePositionUpdated(Vector2 mousePos)

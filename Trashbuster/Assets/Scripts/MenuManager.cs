@@ -27,15 +27,6 @@ public class MenuManager : MonoBehaviour
             CreditsUI = GameObject.Find("CreditsUI");
             CreditsUI.SetActive(false);
         }
-
-        foreach(GameStates state in Enum.GetValues(typeof(GameStates)))
-        {
-            if (SceneManager.GetActiveScene().name == state.ToString())
-            {
-                SceneStateManager.currentGameStates = state;
-                break;
-            }
-        }
     }
     
     void Update()
