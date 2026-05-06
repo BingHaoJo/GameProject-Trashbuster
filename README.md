@@ -3,7 +3,7 @@
 itch.io page: https://kaitojo.itch.io/trashbuster
 
 How to run the game:
-Go to the itch.io page and press "Run the Game". Next, press the fullscreen button on the bottom right of the game.
+Go to the itch.io page and press "Run the Game".
 
 Controls:
 A - Move left
