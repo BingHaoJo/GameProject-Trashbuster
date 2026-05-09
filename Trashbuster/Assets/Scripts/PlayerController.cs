@@ -19,15 +19,18 @@ public class PlayerController : MonoBehaviour
 {
     private float walkSpeed = 13f;
     private float jumpForce = 14f;
+    [Header("Referencing")]
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Transform groundCheck;
     [SerializeField] private VacuumGunController vacuumGunController;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private bool ControlsDisabled = false;
-    [SerializeField] private InputActionAsset playerInput;
     [SerializeField] private Animator animator;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private InputActionAsset playerInput;
     [SerializeField] private AudioClip footStepsAudio;
     [SerializeField] private AudioClip jumpAudio;
+    [SerializeField] private ParticleSystem stepDust;
+    [SerializeField] private bool ControlsDisabled = false;
+    private AudioSource walkAUSource;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
     private bool keepMomentum = false;
@@ -35,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
+    private bool isDusting = false;
     
     void OnEnable()
     {
@@ -51,6 +55,8 @@ public class PlayerController : MonoBehaviour
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
+        walkAUSource = gameObject.GetComponent<AudioSource>();
+
         if (ControlsDisabled)
         {
             playerInput.FindActionMap("Player").Disable();
@@ -59,7 +65,6 @@ public class PlayerController : MonoBehaviour
         {
             playerInput.FindActionMap("Player").Enable();
         }
-
     }
 
     // Update is called once per frame
@@ -75,11 +80,10 @@ public class PlayerController : MonoBehaviour
 
         if (jumpAction.IsPressed() && IsGrounded())
         {
-            currentState = PlayerStates.Jumping;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
+            Jump();
         }
 
+        // Need pre-frame checks
         if (rb.linearVelocityY < 0f && !IsGrounded())
         {
             currentState = PlayerStates.Falling;
@@ -88,44 +92,18 @@ public class PlayerController : MonoBehaviour
         if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
         {
             StartCoroutine(AllowIdle());
-
         }
 
         // print("Current State: " + currentState);
 
         Debug.DrawLine(groundCheck.position, groundCheck.position + Vector3.right * groundCheckSize.x / 2f, Color.red);
-
         
     }
 
     private void FixedUpdate()
     {
         StateFunction();
-
-        // Moving on X axis
-        if (moveInput.x != 0f && IsGrounded())
-        {
-            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
-            currentState = PlayerStates.Walking;
-            keepMomentum = false;
-        }
-        else if (moveInput.x != 0f && !IsGrounded())
-        {
-            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
-            keepMomentum = false;
-        }
-
-        // Moving on Y axis
-        if(moveInput.x == 0f && IsIdle())
-        {
-            rb.linearVelocity = Vector2.zero;
-            currentState = PlayerStates.Idle;
-            keepMomentum = false;
-        }
-        else if (moveInput.x == 0f && !IsIdle() && !keepMomentum)
-        {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
-        }
+        StateTransistion();
 
         // Disable stopping momentum mid air
         if (InputSystem.actions.FindAction("Push").IsPressed())
@@ -133,17 +111,13 @@ public class PlayerController : MonoBehaviour
             keepMomentum = true;
         }
 
-        // Playing walking sound
-        if (currentState == PlayerStates.Walking && !gameObject.GetComponent<AudioSource>().isPlaying)
+        if (stepDust.isPlaying && currentState != PlayerStates.Walking && isDusting)
         {
-            gameObject.GetComponent<AudioSource>().Play();
+            stepDust.Stop();
+            isDusting = false;
         }
-        else if(currentState != PlayerStates.Walking && gameObject.GetComponent<AudioSource>().isPlaying)
-        {
-            gameObject.GetComponent<AudioSource>().Stop();
-        }
-    
 
+        // print(stepDust.isPlaying);
     }
 
     private bool IsGrounded()
@@ -162,9 +136,11 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerStates.Idle;
     }
 
-    private void Pause()
+    private void Jump()
     {
-        AudioManager.Instance.PlaySfx(footStepsAudio);
+        currentState = PlayerStates.Jumping;
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
     }
 
     private void StateFunction()
@@ -180,8 +156,22 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.SetBool("isWalking", true);
                     animator.SetBool("isFalling", false);
-                }
+                    if (!isDusting)
+                    {
+                        stepDust.Play();
+                        isDusting = true;
+                    }
 
+                    // Playing walking sound
+                    if (!walkAUSource.isPlaying)
+                    {
+                        walkAUSource.Play();
+                    }
+                    else if(walkAUSource.isPlaying)
+                    {
+                        walkAUSource.Stop();
+                    }
+                }
                 break;
             case PlayerStates.Jumping:
                 animator.SetBool("isWalking", false);
@@ -201,6 +191,36 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isFalling", false);
                 animator.SetBool("isJumping", false);
                 break;
+        }
+    }
+
+    private void StateTransistion()
+    {
+
+
+        // Moving on X axis
+        if (moveInput.x != 0f && IsGrounded())
+        {
+            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+            currentState = PlayerStates.Walking;
+            keepMomentum = false;
+        }
+        else if (moveInput.x != 0f && !IsGrounded())
+        {
+            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+            keepMomentum = false;
+        }
+
+        // Moving on Y axis
+        if(moveInput.x == 0f && IsIdle())
+        {
+            rb.linearVelocity = Vector2.zero;
+            currentState = PlayerStates.Idle;
+            keepMomentum = false;            
+        }
+        else if (moveInput.x == 0f && !IsIdle() && !keepMomentum)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
         }
     }
 
