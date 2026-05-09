@@ -9,6 +9,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private PortalTrigger portal;
     [SerializeField] private TrashBinBase[] trashBins;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text trashLeftText;
     [SerializeField] private int completionThreshold = 3;
     [SerializeField] private GameObject trash;
     [SerializeField] private bool isManualThreshold;
@@ -45,6 +46,9 @@ public class CompletionCheck : MonoBehaviour
         // Update trash score display
         scoreText.text = "Trash Score: " + trashScore.ToString();
 
+        // Update trash left
+        trashLeftText.text = "Trash left: " + (completionThreshold - currentTrashCount).ToString();
+
         // Check Completion Progress
         if (currentTrashCount >= completionThreshold)
         {
@@ -58,5 +62,6 @@ public class CompletionCheck : MonoBehaviour
     {
         currentTrashCount++;
         trashScore++;
+        
     }
 }
