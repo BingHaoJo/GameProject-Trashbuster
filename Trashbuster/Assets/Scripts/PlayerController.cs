@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private float walkSpeed = 13f;
     private float jumpForce = 14f;
     [Header("Referencing")]
-    [SerializeField] private Rigidbody2D rb;
+    private Rigidbody2D rb;
     [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform groundCheck;
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
     private bool isDusting = false;
+    private bool is3D = false;
     
     void OnEnable()
     {
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump");
         walkAUSource = gameObject.GetComponent<AudioSource>();
 
+        // Disables player controls
         if (ControlsDisabled)
         {
             playerInput.FindActionMap("Player").Disable();
@@ -70,40 +72,24 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // // Changing from falling state
-        // if (currentState == PlayerStates.Falling && IsGrounded())
-        // {
-        //     AudioManager.Instance.PlaySfx(footStepsAudio, 0.3f);
-        // }
-
         moveInput = moveAction.ReadValue<Vector2>();
 
-        if (jumpAction.IsPressed() && IsGrounded())
-        {
-            Jump();
-        }
+        StateTransistion();
 
-        // Need pre-frame checks
-        if (rb.linearVelocityY < 0f && !IsGrounded())
-        {
-            currentState = PlayerStates.Falling;
-        }
-
+        // If player airboost while on the ground, start the coroutine to Idle state. Needs per-frame check.
         if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
         {
             StartCoroutine(AllowIdle());
         }
 
         // print("Current State: " + currentState);
-
-        Debug.DrawLine(groundCheck.position, groundCheck.position + Vector3.right * groundCheckSize.x / 2f, Color.red);
-        
     }
 
     private void FixedUpdate()
     {
         StateFunction();
-        StateTransistion();
+
+
 
         // Disable stopping momentum mid air
         if (InputSystem.actions.FindAction("Push").IsPressed())
@@ -111,13 +97,22 @@ public class PlayerController : MonoBehaviour
             keepMomentum = true;
         }
 
+        // Stop dust particle
         if (stepDust.isPlaying && currentState != PlayerStates.Walking && isDusting)
         {
             stepDust.Stop();
             isDusting = false;
         }
 
-        // print(stepDust.isPlaying);
+        // Playing walking sound
+        if (!walkAUSource.isPlaying && currentState == PlayerStates.Walking)
+        {
+            walkAUSource.Play();
+        }
+        else if(walkAUSource.isPlaying && currentState != PlayerStates.Walking)
+        {
+            walkAUSource.Stop();
+        }
     }
 
     private bool IsGrounded()
@@ -161,16 +156,6 @@ public class PlayerController : MonoBehaviour
                         stepDust.Play();
                         isDusting = true;
                     }
-
-                    // Playing walking sound
-                    if (!walkAUSource.isPlaying)
-                    {
-                        walkAUSource.Play();
-                    }
-                    else if(walkAUSource.isPlaying)
-                    {
-                        walkAUSource.Stop();
-                    }
                 }
                 break;
             case PlayerStates.Jumping:
@@ -196,8 +181,6 @@ public class PlayerController : MonoBehaviour
 
     private void StateTransistion()
     {
-
-
         // Moving on X axis
         if (moveInput.x != 0f && IsGrounded())
         {
@@ -211,7 +194,7 @@ public class PlayerController : MonoBehaviour
             keepMomentum = false;
         }
 
-        // Moving on Y axis
+        // Stationery
         if(moveInput.x == 0f && IsIdle())
         {
             rb.linearVelocity = Vector2.zero;
@@ -222,6 +205,23 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
         }
+
+        // Jumping
+        if (jumpAction.IsPressed() && IsGrounded())
+        {
+            Jump();
+        }
+
+        // Falling
+        if (rb.linearVelocityY < 0f && !IsGrounded())
+        {
+            currentState = PlayerStates.Falling;
+        }
+    }
+    public void ApplyPushForce(float pushForce, Vector2 pushDir)
+    {
+        currentState = PlayerStates.ForcePushedUp;
+        rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -251,12 +251,6 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = true; // flip vacuum gun sprite to match player direction
         }
-    }
-
-    public void ApplyPushForce(float pushForce, Vector2 pushDir)
-    {
-        currentState = PlayerStates.ForcePushedUp;
-        rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
     }
 
     void OnDisable()
