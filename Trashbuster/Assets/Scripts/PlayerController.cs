@@ -67,6 +67,16 @@ public class PlayerController : MonoBehaviour
         {
             playerInput.FindActionMap("Player").Enable();
         }
+
+        // 3D or 2D check
+        if (is3D)
+        {
+            // rb = gameObject.GetComponent<Rigidbody>();
+        }
+        else
+        {
+            rb = gameObject.GetComponent<Rigidbody2D>();
+        }
     }
 
     // Update is called once per frame

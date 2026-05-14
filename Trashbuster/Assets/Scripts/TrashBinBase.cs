@@ -6,6 +6,7 @@ using UnityEngine;
 enum BinType
 {
     General,
+    Food,
     Recycle,
     Paper,
     Plastic,
@@ -40,7 +41,7 @@ public class TrashBinBase : MonoBehaviour
         {
             TrashDeposited(trash);
         }
-        else if (binType == BinType.Recycle && trash.trashType != TrashType.General) // If it's recyclable, accept
+        else if (binType == BinType.Recycle && trash.trashType != TrashType.Food) // If it's recyclable, accept
         {
             TrashDeposited(trash);
         }

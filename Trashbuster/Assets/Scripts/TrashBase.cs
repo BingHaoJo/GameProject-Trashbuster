@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum TrashType
 {
-    General,
+    Food,
     Plastic,
     Paper,
     Metal,
@@ -19,6 +19,88 @@ public class TrashBase : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    void Update()
+    {
+        // Check if trash is in the ground or wall and apply force to push the trash out
+        FloatTrashInGround();
+    }
+
+    private void FloatTrashInGround()
+    {
+        if (SceneStateManager.currentGameStates == GameStates.Level1)
+        {
+            // When trash in floor
+            if (transform.position.y < -2f)
+            {
+                rb.linearVelocityY = 1f;
+            }
+
+            // When trash in wall
+            if (transform.position.x < -50f)
+            {
+                rb.linearVelocityX = 1f;
+            }
+            else if (transform.position.x > 54f)
+            {
+                rb.linearVelocityX = -1f;
+            }
+        }
+        else if (SceneStateManager.currentGameStates == GameStates.Level2)
+        {
+            // When trash in floor
+            if (transform.position.y < -1f)
+            {
+                rb.linearVelocityY = 1f;
+            }
+
+            // When trash in wall
+            if (transform.position.x < -25f)
+            {
+                rb.linearVelocityX = 1f;
+            }
+            else if (transform.position.x > 23.5f)
+            {
+                rb.linearVelocityX = -1f;
+            }
+        }
+        else if (SceneStateManager.currentGameStates == GameStates.Level3)
+        {
+            // When trash in floor
+            if (transform.position.y < -1f)
+            {
+                rb.linearVelocityY = 1f;
+            }
+
+            // When trash in wall
+            if (transform.position.x < -99f)
+            {
+                rb.linearVelocityX = 1f;
+            }
+            else if (transform.position.x > 99f)
+            {
+                rb.linearVelocityX = -1f;
+            }
+        }
+        else if (SceneStateManager.currentGameStates == GameStates.Winscreen)
+        {
+            // When trash in floor
+            if (transform.position.y < -8f)
+            {
+                rb.linearVelocityY = 1f;
+            }
+
+            // When trash in wall
+            if (transform.position.x < -17f)
+            {
+                rb.linearVelocityX = 1f;
+            }
+            else if (transform.position.x > 17f)
+            {
+                rb.linearVelocityX = -1f;
+            }
+        }
     }
 
     private float ToPlayerDist()

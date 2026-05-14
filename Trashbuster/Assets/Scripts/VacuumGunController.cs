@@ -212,6 +212,13 @@ public class VacuumGunController : MonoBehaviour
         newTrash.SetActive(true); // reuse collected trash
         Vector2 shootDir = (worldPos - player.transform.position).normalized;
         newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
+        
+       // Apply force to trash if the gun not aim down
+        // if (worldPos.y > player.transform.position.y - 1f)
+        // {
+        //     newTrash.GetComponent<TrashBase>().ApplyShootForce(shootForce, shootDir);
+        // }
+
         canShoot = false;
         shootAudio.Play();
         StartCoroutine(ShootCooldown());

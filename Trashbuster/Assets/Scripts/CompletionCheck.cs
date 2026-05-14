@@ -14,7 +14,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private GameObject trash;
     [SerializeField] private bool isManualThreshold;
     private int currentTrashCount = 0;
-    public static int trashScore = 0;
+    public static int trashScore = 100;
 
     void OnEnable()
     {
