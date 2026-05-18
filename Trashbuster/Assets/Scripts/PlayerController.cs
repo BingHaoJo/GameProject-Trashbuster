@@ -20,16 +20,17 @@ public class PlayerController : MonoBehaviour
     private float walkSpeed = 13f;
     private float jumpForce = 14f;
     [Header("Referencing")]
-    private Rigidbody2D rb;
-    [SerializeField] private VacuumGunController vacuumGunController;
+    private Rigidbody2D rb2D;
+    private Rigidbody rb;
+    // [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private InputActionAsset playerInput;
-    [SerializeField] private AudioClip footStepsAudio;
     [SerializeField] private AudioClip jumpAudio;
     [SerializeField] private ParticleSystem stepDust;
     [SerializeField] private bool ControlsDisabled = false;
+    [SerializeField] private bool is3D = false;
     private AudioSource walkAUSource;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
@@ -39,15 +40,14 @@ public class PlayerController : MonoBehaviour
     private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
     private bool isDusting = false;
-    private bool is3D = false;
     
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (vacuumGunController != null)
-        {
-            vacuumGunController.mousePositionUpdated += OnMousePositionUpdated; // signal connected
-        }
+        // if (vacuumGunController != null)
+        // {
+        //     vacuumGunController.mousePositionUpdated += OnMousePositionUpdated; // signal connected
+        // }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -71,11 +71,11 @@ public class PlayerController : MonoBehaviour
         // 3D or 2D check
         if (is3D)
         {
-            // rb = gameObject.GetComponent<Rigidbody>();
+            rb = gameObject.GetComponent<Rigidbody>();
         }
         else
         {
-            rb = gameObject.GetComponent<Rigidbody2D>();
+            rb2D = gameObject.GetComponent<Rigidbody2D>();
         }
     }
 
@@ -97,9 +97,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StateFunction();
-
-
+        // StateFunction();
 
         // Disable stopping momentum mid air
         if (InputSystem.actions.FindAction("Push").IsPressed())
@@ -127,7 +125,14 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
+        if (is3D)
+        {
+            return Physics.CheckBox(groundCheck.position, (Vector3)groundCheckSize / 2f, Quaternion.Euler(0f, 0f, groundCheckAngle), groundLayer);
+        }
+        else
+        {
+            return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
+        }
     }
 
     private bool IsIdle()
@@ -144,7 +149,14 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         currentState = PlayerStates.Jumping;
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        if (is3D)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+        }
+        else
+        {
+            rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
+        }
         AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
     }
 
@@ -194,26 +206,54 @@ public class PlayerController : MonoBehaviour
         // Moving on X axis
         if (moveInput.x != 0f && IsGrounded())
         {
-            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+            if (is3D)
+            {
+                rb.linearVelocity = new Vector3(moveInput.x * walkSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
+            }
+            else
+            {
+                rb2D.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb2D.linearVelocityY);
+            }
             currentState = PlayerStates.Walking;
             keepMomentum = false;
         }
         else if (moveInput.x != 0f && !IsGrounded())
         {
-            rb.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb.linearVelocityY);
+            if (is3D)
+            {
+                rb.linearVelocity = new Vector3(moveInput.x * walkSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
+            }
+            else
+            {
+                rb2D.linearVelocity = new Vector2(moveInput.x * walkSpeed, rb2D.linearVelocityY);
+            }
             keepMomentum = false;
         }
 
         // Stationery
         if(moveInput.x == 0f && IsIdle())
         {
-            rb.linearVelocity = Vector2.zero;
+            if (is3D)
+            {
+                rb.linearVelocity = Vector3.zero;
+            }
+            else
+            {
+                rb2D.linearVelocity = Vector2.zero;
+            }
             currentState = PlayerStates.Idle;
             keepMomentum = false;            
         }
         else if (moveInput.x == 0f && !IsIdle() && !keepMomentum)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
+            if (is3D)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, rb.linearVelocity.z);
+            }
+            else
+            {
+                rb2D.linearVelocity = new Vector2(0f, rb2D.linearVelocityY);
+            }
         }
 
         // Jumping
@@ -223,15 +263,32 @@ public class PlayerController : MonoBehaviour
         }
 
         // Falling
-        if (rb.linearVelocityY < 0f && !IsGrounded())
+        if (is3D)
         {
-            currentState = PlayerStates.Falling;
+            if (rb.linearVelocity.y < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
+        }
+        else
+        {
+            if (rb2D.linearVelocityY < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
         }
     }
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {
         currentState = PlayerStates.ForcePushedUp;
-        rb.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
+        if (is3D)
+        {
+            rb.AddForce((Vector3)pushDir * pushForce, ForceMode.Impulse);
+        }
+        else
+        {
+            rb2D.AddForce(pushDir * pushForce, ForceMode2D.Impulse);
+        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -254,21 +311,21 @@ public class PlayerController : MonoBehaviour
         if (mousePos.x > transform.position.x + 0.1f)
         {
             transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = false; // flip vacuum gun sprite to match player direction
+            // vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = false; // flip vacuum gun sprite to match player direction
         }
         else if (mousePos.x < transform.position.x - 0.1f)
         {
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = true; // flip vacuum gun sprite to match player direction
+            // vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = true; // flip vacuum gun sprite to match player direction
         }
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        if (vacuumGunController != null)
-        {
-            vacuumGunController.mousePositionUpdated -= OnMousePositionUpdated; // signal disconnected
-        }
+        // if (vacuumGunController != null)
+        // {
+        //     vacuumGunController.mousePositionUpdated -= OnMousePositionUpdated; // signal disconnected
+        // }
     }
 }
