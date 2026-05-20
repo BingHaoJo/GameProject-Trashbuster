@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip jumpAudio;
     [SerializeField] private ParticleSystem stepDust;
     [SerializeField] private bool ControlsDisabled = false;
-    [SerializeField] private bool is3D = false;
+    private bool is3D = false;
     private AudioSource walkAUSource;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
@@ -69,13 +69,15 @@ public class PlayerController : MonoBehaviour
         }
 
         // 3D or 2D check
-        if (is3D)
+        if (gameObject.GetComponent<Rigidbody>() != null)
         {
             rb = gameObject.GetComponent<Rigidbody>();
+            is3D = true;
         }
-        else
+        else if (gameObject.GetComponent<Rigidbody2D>() != null)
         {
             rb2D = gameObject.GetComponent<Rigidbody2D>();
+            is3D = false;
         }
     }
 
@@ -283,7 +285,7 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerStates.ForcePushedUp;
         if (is3D)
         {
-            rb.AddForce((Vector3)pushDir * pushForce, ForceMode.Impulse);
+            rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
         }
         else
         {

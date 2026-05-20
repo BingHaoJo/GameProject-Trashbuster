@@ -109,7 +109,7 @@ public class VacuumGunController : MonoBehaviour
         // Rotate gun to look at mouse
         float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
-        mousePositionUpdated?.Invoke(worldPos); // signal emitted
+        // mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
 
         if (canShoot && currentSlot.Count > 0 && InputSystem.actions.FindAction("Shoot").IsPressed())
@@ -125,7 +125,7 @@ public class VacuumGunController : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision) // for 2D
     {
         TrashBase trash = collision.GetComponent<TrashBase>();
         Vector2 forceDir = ((Vector2)transform.position - (Vector2)collision.transform.position).normalized;
@@ -165,6 +165,34 @@ public class VacuumGunController : MonoBehaviour
         // }
     }
 
+    private void OnTriggerStay(Collider collision) // for 3D
+    {
+        TrashBase trash = collision.GetComponent<TrashBase>();
+        Vector3 forceDir = (transform.position - collision.transform.position).normalized;
+        AudioSource suckAUSrc = AudioManager.Instance.GetAudioSource(suckSound);
+        // Apply Vacuum Force on trash
+        if (InputSystem.actions.FindAction("Suck").IsPressed())
+        {
+            if (trash != null)
+            {
+                trash.ApplyVacuumForce(vacuumForce, forceDir);
+            }
+            if (!suckAUSrc.isPlaying)
+            {
+                AudioManager.Instance.PlaySfx(suckSound, 0.3f);
+            }
+        }
+        else
+        {
+            if (suckAUSrc.isPlaying)
+            {
+                suckAUSrc.Stop();
+            }
+            
+        }
+
+    }
+
     private void OnTrashCollected(TrashBase trash)
     {
         // Object pooling trash collection into hotbar slots
@@ -176,7 +204,7 @@ public class VacuumGunController : MonoBehaviour
             {
                 slot.Enqueue(trash);
                 trash.gameObject.SetActive(false);
-                AudioManager.Instance.PlaySfx(collectSound);
+                AudioManager.Instance.PlaySfx(collectSound, 0.3f);
                 return;
             }
         }
@@ -192,7 +220,7 @@ public class VacuumGunController : MonoBehaviour
                 return;
             }
         }
-}
+    }
 
     private void TriggerPush()
     {

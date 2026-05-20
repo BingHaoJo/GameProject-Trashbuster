@@ -13,12 +13,22 @@ public enum TrashType
 public class TrashBase : MonoBehaviour
 {
     public TrashType trashType = TrashType.Plastic;
-    [SerializeField] private Rigidbody2D rb;
+    private Rigidbody2D rb2D;
+    private Rigidbody rb;
     private GameObject player;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+
+        if (GetComponent<Rigidbody2D>() != null)
+        {
+            rb2D = GetComponent<Rigidbody2D>();
+        }
+        else if (GetComponent<Rigidbody>() != null)
+        {
+            rb = GetComponent<Rigidbody>();
+        }
     }
 
     void Update()
@@ -34,17 +44,38 @@ public class TrashBase : MonoBehaviour
             // When trash in floor
             if (transform.position.y < -2f)
             {
-                rb.linearVelocityY = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 1f);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 1f, rb.linearVelocity.z);
+                }
             }
 
             // When trash in wall
             if (transform.position.x < -50f)
             {
-                rb.linearVelocityX = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
             else if (transform.position.x > 54f)
             {
-                rb.linearVelocityX = -1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(-1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(-1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
         }
         else if (SceneStateManager.currentGameStates == GameStates.Level2)
@@ -52,17 +83,38 @@ public class TrashBase : MonoBehaviour
             // When trash in floor
             if (transform.position.y < -1f)
             {
-                rb.linearVelocityY = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 1f);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 1f, rb.linearVelocity.z);
+                }
             }
 
             // When trash in wall
             if (transform.position.x < -25f)
             {
-                rb.linearVelocityX = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
             else if (transform.position.x > 23.5f)
             {
-                rb.linearVelocityX = -1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(-1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(-1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
         }
         else if (SceneStateManager.currentGameStates == GameStates.Level3)
@@ -70,17 +122,38 @@ public class TrashBase : MonoBehaviour
             // When trash in floor
             if (transform.position.y < -1f)
             {
-                rb.linearVelocityY = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 1f);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 1f, rb.linearVelocity.z);
+                }
             }
 
             // When trash in wall
             if (transform.position.x < -99f)
             {
-                rb.linearVelocityX = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
             else if (transform.position.x > 99f)
             {
-                rb.linearVelocityX = -1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(-1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(-1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
         }
         else if (SceneStateManager.currentGameStates == GameStates.Winscreen)
@@ -88,17 +161,38 @@ public class TrashBase : MonoBehaviour
             // When trash in floor
             if (transform.position.y < -8f)
             {
-                rb.linearVelocityY = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, 1f);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 1f, rb.linearVelocity.z);
+                }
             }
 
             // When trash in wall
             if (transform.position.x < -17f)
             {
-                rb.linearVelocityX = 1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
             else if (transform.position.x > 17f)
             {
-                rb.linearVelocityX = -1f;
+                if (rb2D != null)
+                {
+                    rb2D.linearVelocity = new Vector2(-1f, rb2D.linearVelocity.y);
+                }
+                else if (rb != null)
+                {
+                    rb.linearVelocity = new Vector3(-1f, rb.linearVelocity.y, rb.linearVelocity.z);
+                }
             }
         }
     }
@@ -110,11 +204,25 @@ public class TrashBase : MonoBehaviour
 
     public void ApplyShootForce(float shootForce, Vector2 shootDir)
     {
-        rb.AddForce(shootDir * shootForce, ForceMode2D.Impulse);
+        if (rb2D != null)
+        {
+            rb2D.AddForce(shootDir * shootForce, ForceMode2D.Impulse);
+        }
+        else if (rb != null)
+        {
+            rb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+        }
     }
 
     public void ApplyVacuumForce(float vacuumForce, Vector2 forceDir)
     {
-        rb.AddForce(forceDir * vacuumForce, ForceMode2D.Force);
+        if (rb2D != null)
+        {
+            rb2D.AddForce(forceDir * vacuumForce, ForceMode2D.Force);
+        }
+        else if (rb != null)
+        {
+            rb.AddForce(forceDir * vacuumForce, ForceMode.Force);
+        }
     }
 }
