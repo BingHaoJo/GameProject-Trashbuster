@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("Referencing")]
     private Rigidbody2D rb2D;
     private Rigidbody rb;
-    // [SerializeField] private VacuumGunController vacuumGunController;
+    [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private Animator animator;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
@@ -44,10 +44,10 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        // if (vacuumGunController != null)
-        // {
-        //     vacuumGunController.mousePositionUpdated += OnMousePositionUpdated; // signal connected
-        // }
+        if (vacuumGunController != null)
+        {
+            vacuumGunController.mousePositionUpdated += OnMousePositionUpdated; // signal connected
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -310,24 +310,44 @@ public class PlayerController : MonoBehaviour
     {
         // Flip player sprite
         // Adding a small threshold to prevent jitter when mouse is near the player's center
-        if (mousePos.x > transform.position.x + 0.1f)
+        if (is3D)
         {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            // vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = false; // flip vacuum gun sprite to match player direction
+            var VacuumGun3DModel = vacuumGunController.transform.Find("VacuumGun3DModel");
+
+            if (mousePos.x > transform.position.x + 0.1f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                VacuumGun3DModel.transform.localRotation = Quaternion.Euler(0f, VacuumGun3DModel.transform.localRotation.y, VacuumGun3DModel.transform.localRotation.z); // flip vacuum gun sprite to match player direction
+                vacuumGunController.transform.position = new Vector3(transform.position.x + -0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing right
+            }
+            else if (mousePos.x < transform.position.x - 0.1f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                VacuumGun3DModel.transform.localRotation = Quaternion.Euler(180f, VacuumGun3DModel.transform.localRotation.y, VacuumGun3DModel.transform.localRotation.z); // flip vacuum gun sprite to match player direction
+                vacuumGunController.transform.position = new Vector3(transform.position.x + 0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing left
+            }
         }
-        else if (mousePos.x < transform.position.x - 0.1f)
+        else
         {
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            // vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = true; // flip vacuum gun sprite to match player direction
+            if (mousePos.x > transform.position.x + 0.1f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = false; // flip vacuum gun sprite to match player direction
+            }
+            else if (mousePos.x < transform.position.x - 0.1f)
+            {
+                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                vacuumGunController.transform.Find("VacuumGunSprite").GetComponent<SpriteRenderer>().flipY = true; // flip vacuum gun sprite to match player direction
+            }
         }
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        // if (vacuumGunController != null)
-        // {
-        //     vacuumGunController.mousePositionUpdated -= OnMousePositionUpdated; // signal disconnected
-        // }
+        if (vacuumGunController != null)
+        {
+            vacuumGunController.mousePositionUpdated -= OnMousePositionUpdated; // signal disconnected
+        }
     }
 }

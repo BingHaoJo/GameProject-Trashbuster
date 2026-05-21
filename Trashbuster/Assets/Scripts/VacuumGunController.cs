@@ -56,6 +56,7 @@ public class VacuumGunController : MonoBehaviour
     private Vector2 mousePos;
     public Vector3 worldPos;
     private Vector2 gunDir;
+    private bool isRight = false;
 
     private void OnEnable()
     {
@@ -109,8 +110,8 @@ public class VacuumGunController : MonoBehaviour
         // Rotate gun to look at mouse
         float angleDeg = Mathf.Atan2(gunDir.y, gunDir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angleDeg);
-        // mousePositionUpdated?.Invoke(worldPos); // signal emitted
 
+        FlipPlayer();
 
         if (canShoot && currentSlot.Count > 0 && InputSystem.actions.FindAction("Shoot").IsPressed())
         {
@@ -219,6 +220,21 @@ public class VacuumGunController : MonoBehaviour
                 AudioManager.Instance.PlaySfx(collectSound, 0.3f);
                 return;
             }
+        }
+    }
+
+    private void FlipPlayer()
+    {
+        // This should make the signal run once whilst constantly checking the mouse position
+        if (worldPos.x > player.transform.position.x + 0.1f && !isRight)// If mouse is on the right side and isRight is true, set isRight to false and get the condition below ready
+        {
+            mousePositionUpdated?.Invoke(worldPos); // signal emitted
+            isRight = true;
+        }
+        else if (worldPos.x < player.transform.position.x - 0.1f && isRight)// If mouse is on the left side and isRight is false, set isRight to true and get the condition above ready
+        {
+            mousePositionUpdated?.Invoke(worldPos); // signal emitted
+            isRight = false;
         }
     }
 
