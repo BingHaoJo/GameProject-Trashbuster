@@ -47,7 +47,13 @@ public class PortalTrigger : MonoBehaviour
         }
         else if (SceneStateManager.currentGameStates == GameStates.Level3 && nextLevel)
         {
-            SceneStateManager.Level3Completed = true;
+            SceneStateManager.Level4Completed = true;
+            SceneStateManager.currentGameStates = GameStates.Level4;
+            SceneManager.LoadScene("Level4");
+        }
+        else if (SceneStateManager.currentGameStates == GameStates.Level4 && nextLevel)
+        {
+            SceneStateManager.Level4Completed = true;
             SceneStateManager.currentGameStates = GameStates.Winscreen;
             SceneManager.LoadScene("WinScreen");
         }

@@ -44,14 +44,20 @@ public class MenuManager : MonoBehaviour
         {
             if (SceneStateManager.Level2Completed)
             {
-                // Unlock Level 3 button
+                // Unlock Level 2 button
                 GameObject.Find("Level2Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
             }
 
             if (SceneStateManager.Level3Completed)
             {
-                // Unlock Level 2 button
+                // Unlock Level 3 button
                 GameObject.Find("Level3Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
+            }
+
+            if (SceneStateManager.Level4Completed)
+            {
+                // Unlock Level 4 button
+                // GameObject.Find("Level4Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
             }
         }
     }
@@ -108,5 +114,12 @@ public class MenuManager : MonoBehaviour
         SceneStateManager.currentGameStates = GameStates.Level3;
         AudioManager.Instance.PlaySfx(pressSound);
         SceneManager.LoadScene("Level3");
+    }
+
+    public void Level4ButtonFunction()
+    {
+        // SceneStateManager.currentGameStates = GameStates.Level4;
+        // AudioManager.Instance.PlaySfx(pressSound);
+        // SceneManager.LoadScene("Level4");
     }
 }

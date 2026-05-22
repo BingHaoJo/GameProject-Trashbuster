@@ -295,7 +295,7 @@ public class PlayerController : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3")
+        if (scene.name == "Level1" || scene.name == "Level2" || scene.name == "Level3" || scene.name == "Level4")
         {
             ControlsDisabled = false; // enable player controls when scene is loaded
         }
