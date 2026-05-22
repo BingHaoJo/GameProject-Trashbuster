@@ -16,7 +16,6 @@ enum BinType
 
 public class TrashBinBase : MonoBehaviour
 {
-    [SerializeField] private GameObject trash;
     [SerializeField] private BinType binType = BinType.General;
     [SerializeField] private TMP_Text binText;
     [SerializeField] private AudioSource depositedAudio;
@@ -28,6 +27,14 @@ public class TrashBinBase : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Trash"))
+        {
+            TrashOrganizer(collision.GetComponent<TrashBase>());
+        }
+    }
+
+    void OnTriggerEnter(Collider collision)
     {
         if (collision.CompareTag("Trash"))
         {
