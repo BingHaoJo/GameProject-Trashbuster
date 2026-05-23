@@ -162,6 +162,23 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
     }
 
+    private void Fall()
+    {
+        if (is3D)
+        {
+            if (rb.linearVelocity.y < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
+        }
+        else
+        {
+            if (rb2D.linearVelocityY < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
+        }
+    }
     private void StateFunction()
     {
         switch (currentState)
@@ -265,20 +282,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Falling
-        if (is3D)
-        {
-            if (rb.linearVelocity.y < 0f && !IsGrounded())
-            {
-                currentState = PlayerStates.Falling;
-            }
-        }
-        else
-        {
-            if (rb2D.linearVelocityY < 0f && !IsGrounded())
-            {
-                currentState = PlayerStates.Falling;
-            }
-        }
+        Fall();
     }
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {

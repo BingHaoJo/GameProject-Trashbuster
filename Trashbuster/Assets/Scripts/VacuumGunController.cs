@@ -57,7 +57,6 @@ public class VacuumGunController : MonoBehaviour
     public Vector3 worldPos;
     private Vector2 gunDir;
     private bool isRight = false;
-
     private void OnEnable()
     {
         if (vacuumBarrel != null)
@@ -291,10 +290,17 @@ public class VacuumGunController : MonoBehaviour
     private void UIHotBar()
     {
         // Update hotbar UI images based on the top item in each slot
-        Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot2.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot2.Count > 0) ? trashSlot2.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot3.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot3.Count > 0) ? trashSlot3.Peek().GetComponent<SpriteRenderer>().sprite : null;
-        Slot4.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot4.Count > 0) ? trashSlot4.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        if (gameObject.GetComponent<PolygonCollider2D>() != null)
+        {
+            Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().GetComponent<SpriteRenderer>().sprite : null;
+            Slot2.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot2.Count > 0) ? trashSlot2.Peek().GetComponent<SpriteRenderer>().sprite : null;
+            Slot3.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot3.Count > 0) ? trashSlot3.Peek().GetComponent<SpriteRenderer>().sprite : null;
+            Slot4.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot4.Count > 0) ? trashSlot4.Peek().GetComponent<SpriteRenderer>().sprite : null;
+        }
+        else
+        {
+            Slot1.transform.GetChild(0).GetComponent<Image>().sprite = (trashSlot1.Count > 0) ? trashSlot1.Peek().canImage : null;
+        }
 
         // Update hotbar UI based on currentSlot
         Slot1.GetComponent<Image>().color = (currentSlot == trashSlots[0]) ? Color.yellow : Color.purple;
