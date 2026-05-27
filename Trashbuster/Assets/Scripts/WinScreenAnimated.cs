@@ -11,7 +11,7 @@ public class WinScreenAnimated : MonoBehaviour
     [SerializeField] private TMP_Text scoreAmountText;
     [SerializeField] private Button mainMenuButton;
     [SerializeField] private TMP_Text creditsText;
-    private int finalScore = CompletionCheck.trashScore;
+    private int finalScore = GlobalVar.trashScore;
     float timer = 0.01f;
     private int score = 0;
 

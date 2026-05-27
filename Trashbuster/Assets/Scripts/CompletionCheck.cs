@@ -14,7 +14,6 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private GameObject trash;
     [SerializeField] private bool isManualThreshold;
     private int currentTrashCount = 0;
-    public static int trashScore = 100;
 
     void OnEnable()
     {
@@ -44,7 +43,7 @@ public class CompletionCheck : MonoBehaviour
     void Update()
     {
         // Update trash score display
-        scoreText.text = "Trash Score: " + trashScore.ToString();
+        scoreText.text = "Trash Score: " + GlobalVar.trashScore.ToString();
 
         // Update trash left
         trashLeftText.text = "Trash left: " + (completionThreshold - currentTrashCount).ToString();
@@ -61,7 +60,7 @@ public class CompletionCheck : MonoBehaviour
     private void OnTrashDeposited()
     {
         currentTrashCount++;
-        trashScore++;
+        GlobalVar.trashScore++;
         
     }
 }
