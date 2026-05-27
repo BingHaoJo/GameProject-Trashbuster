@@ -4,22 +4,35 @@ using UnityEngine.SceneManagement;
 
 public class PortalTrigger : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
     [SerializeField] private PlayerController player;
-    [SerializeField] private CapsuleCollider2D portalCollider;
     [SerializeField] private AudioSource portalOpenSound;
     [SerializeField] private AudioSource portalCloseSound;
+    private ParticleSystem portalEffect;
+    private CapsuleCollider2D portalCollider2D;
+    private CapsuleCollider portalCollider;
+    private GameObject portalMesh;
+    private Animator animator;
+    public bool is3D = false;
     public bool nextLevel = false;
 
     void Start()
     {
+        if (gameObject.GetComponent<CapsuleCollider2D>() != null)
+        {
+            portalCollider2D = gameObject.GetComponent<CapsuleCollider2D>();
+            animator = gameObject.GetComponent<Animator>();
+            is3D = false;
+        }
+        else if (gameObject.GetComponent<CapsuleCollider>() != null)
+        {
+            portalCollider = gameObject.GetComponent<CapsuleCollider>();
+            portalMesh = transform.GetChild(0).gameObject;
+            portalEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
+            is3D = true;
+        }
+
         PortalOpen();
         player.gameObject.SetActive(false);
-    }
-
-    void OnEnable()
-    {
-        PortalOpen();
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -29,6 +42,28 @@ public class PortalTrigger : MonoBehaviour
             PortalClose();
             player.gameObject.SetActive(false);
         }
+    }
+
+    void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("Player") && SceneStateManager.currentGameStates != GameStates.Winscreen)
+        {
+            player.gameObject.SetActive(false);
+            StartCoroutine(LoadNextLevelDelay());
+        }
+    }
+
+    IEnumerator LoadNextLevelDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+        PortalClose();
+        ChangeScene();
+    }
+    
+    IEnumerator PortalOpenDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+        PortalIdle();
     }
 
     public void ChangeScene()
@@ -69,8 +104,15 @@ public class PortalTrigger : MonoBehaviour
     {
         if (nextLevel || SceneStateManager.currentGameStates == GameStates.Winscreen)// Portal idle ready to next level or idle in winsceen
         {
-            portalCollider.enabled = true;
-            animator.SetBool("PortalIdle", true);
+            if (!is3D)
+            {
+                portalCollider2D.enabled = true;
+                animator.SetBool("PortalIdle", true);
+            }
+            else
+            {
+                portalCollider.enabled = true;
+            }
             player.gameObject.SetActive(true);
         }
         else
@@ -84,15 +126,40 @@ public class PortalTrigger : MonoBehaviour
 
     public void PortalOpen()
     {
-        animator.SetBool("PortalClose", false);
-        animator.SetBool("PortalIdle", false);
+        if (!is3D)
+        {
+            animator.SetBool("PortalClose", false);
+            animator.SetBool("PortalIdle", false);
+        }
+        else
+        {
+            portalMesh.SetActive(true);
+            portalEffect.Play();
+            StartCoroutine(PortalOpenDelay());
+        }
         portalOpenSound.Play();
     }
 
     public void PortalClose()
     {
-        animator.SetBool("PortalClose", true);
-        animator.SetBool("PortalIdle", false);
+        if (!is3D)
+        {
+            animator.SetBool("PortalClose", true);
+            animator.SetBool("PortalIdle", false);  
+        }
+        else
+        {
+            portalMesh.SetActive(false);
+            portalEffect.Stop();
+        }
         portalCloseSound.Play();
+    }
+
+    public void OpenPortal3D()
+    {
+        if (!portalMesh.activeSelf)
+        {
+            PortalOpen();
+        }
     }
 }

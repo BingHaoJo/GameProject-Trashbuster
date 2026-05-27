@@ -52,6 +52,10 @@ public class CompletionCheck : MonoBehaviour
         if (currentTrashCount >= completionThreshold)
         {
             portal.gameObject.SetActive(true);
+            if (portal.is3D)
+            {
+                portal.OpenPortal3D();
+            }
             portal.nextLevel = true;
         }
 

@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30d3b9ca4ef4b7740ad5fd079b704f5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  trash: {fileID: 0}
   binType: 0
   binText: {fileID: 4382661993880374086}
   depositedAudio: {fileID: 4890232431400144779}
