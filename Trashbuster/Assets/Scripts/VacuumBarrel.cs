@@ -8,17 +8,19 @@ public class VacuumBarrel : MonoBehaviour
     public event Action<TrashBase> onTrashCollected;
     [SerializeField] private VacuumGunController vacuumGun;
     private CapsuleCollider2D barrelCollider2D;
-    private CapsuleCollider barrelCollider3D;
+    private BoxCollider barrelCollider3D;
 
     void Start()
     {
         if (GetComponent<CapsuleCollider2D>() != null)
         {
             barrelCollider2D = GetComponent<CapsuleCollider2D>();
+            barrelCollider2D.enabled = false;
         }
-        else if (GetComponent<CapsuleCollider>() != null)
+        else if (GetComponent<BoxCollider>() != null)
         {
-            barrelCollider3D = GetComponent<CapsuleCollider>();
+            barrelCollider3D = GetComponent<BoxCollider>();
+            barrelCollider3D.enabled = false;
         }
     }
 
