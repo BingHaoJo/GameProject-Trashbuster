@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // StateFunction();
+        StateFunction();
 
         // Disable stopping momentum mid air
         if (InputSystem.actions.FindAction("Push").IsPressed())
@@ -209,7 +209,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isJumping", false);
                 animator.SetBool("isPushUp", false);
                 animator.SetBool("isWalking", false);
-                animator.SetBool("isPushSides", false);
                 break;
             case PlayerStates.ForcePushedUp:
                 animator.SetBool("isPushUp", true);
@@ -317,18 +316,24 @@ public class PlayerController : MonoBehaviour
         if (is3D)
         {
             var VacuumGun3DModel = vacuumGunController.transform.Find("VacuumGun3DModel");
+            if (VacuumGun3DModel == null)
+            {
+                Debug.LogError("VacuumGun3DModel not found as a child of VacuumGunController.");
+                return;
+            }
+
 
             if (mousePos.x > transform.position.x + 0.1f)
             {
                 transform.rotation = Quaternion.Euler(0f, 0f, 0f);
                 VacuumGun3DModel.transform.localRotation = Quaternion.Euler(0f, VacuumGun3DModel.transform.localRotation.y, VacuumGun3DModel.transform.localRotation.z); // flip vacuum gun sprite to match player direction
-                vacuumGunController.transform.position = new Vector3(transform.position.x + -0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing right
+                // vacuumGunController.transform.position = new Vector3(transform.position.x + -0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing right
             }
             else if (mousePos.x < transform.position.x - 0.1f)
             {
                 transform.rotation = Quaternion.Euler(0f, 180f, 0f);
                 VacuumGun3DModel.transform.localRotation = Quaternion.Euler(180f, VacuumGun3DModel.transform.localRotation.y, VacuumGun3DModel.transform.localRotation.z); // flip vacuum gun sprite to match player direction
-                vacuumGunController.transform.position = new Vector3(transform.position.x + 0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing left
+                // vacuumGunController.transform.position = new Vector3(transform.position.x + 0.34f, vacuumGunController.transform.position.y, -0.145f); // adjust vacuum gun position to be in front of player when facing left
             }
         }
         else

@@ -18176,6 +18176,34 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1233712596843733728, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 2598dfb4e7e46fc4097c621ca260e2de, type: 2}
+    - target: {fileID: 1785417509557880424, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Height
+      value: 3.235913
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785417509557880424, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Radius
+      value: 0.8797441
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785417509557880424, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Center.x
+      value: -0.017259717
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785417509557880424, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Center.y
+      value: 0.13597071
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785417509557880424, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Center.z
+      value: 0.06019193
+      objectReference: {fileID: 0}
+    - target: {fileID: 2791752367135179871, guid: 02aad250502ff2e428f32540394f96db, type: 3}
+      propertyPath: m_Name
+      value: VacuumGun3D
+      objectReference: {fileID: 0}
     - target: {fileID: 5463300565195020803, guid: 02aad250502ff2e428f32540394f96db, type: 3}
       propertyPath: Slot1
       value: 
