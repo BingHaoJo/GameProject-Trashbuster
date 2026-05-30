@@ -22171,6 +22171,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1652862846}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
+      propertyPath: isManualThreshold
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
       propertyPath: 'trashBins.Array.data[0]'
       value: 
       objectReference: {fileID: 2013662693}

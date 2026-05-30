@@ -106,7 +106,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 0
+  moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 0
@@ -5173,6 +5173,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d401a86e005cdb7449f3f44ca4bd7f89, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7125826081256053087}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d401a86e005cdb7449f3f44ca4bd7f89, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7976377174119616491}
   m_SourcePrefab: {fileID: 100100000, guid: d401a86e005cdb7449f3f44ca4bd7f89, type: 3}
 --- !u!4 &4950692690783091847 stripped
 Transform:
@@ -5203,10 +5206,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 2
-  m_Radius: 1.2868314
+  m_Radius: 1.1547208
   m_Height: 3.052772
   m_Direction: 1
-  m_Center: {x: -0.023988485, y: 0.0030215734, z: 0}
+  m_Center: {x: 0.01018548, y: 0.0030215734, z: -0.4208355}
 --- !u!114 &7125826081256053087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5222,6 +5225,27 @@ MonoBehaviour:
   player: {fileID: 0}
   portalOpenSound: {fileID: 2164691332407531745}
   portalCloseSound: {fileID: 313392313172655164}
-  portalEffect: {fileID: 5720597767304709510}
   is3D: 0
   nextLevel: 0
+--- !u!95 &7976377174119616491
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5764524411668391485}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c80e4a8c83e90e24b875c0655b3eb901, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

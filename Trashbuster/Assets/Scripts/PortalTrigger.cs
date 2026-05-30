@@ -20,16 +20,15 @@ public class PortalTrigger : MonoBehaviour
         if (gameObject.GetComponent<CapsuleCollider2D>() != null)
         {
             portalCollider2D = gameObject.GetComponent<CapsuleCollider2D>();
-            animator = gameObject.GetComponent<Animator>();
             is3D = false;
         }
         else if (gameObject.GetComponent<CapsuleCollider>() != null)
         {
             portalCollider = gameObject.GetComponent<CapsuleCollider>();
-            portalMesh = transform.GetChild(0).gameObject;
             portalEffect = transform.GetChild(1).GetComponent<ParticleSystem>();
             is3D = true;
         }
+        animator = gameObject.GetComponent<Animator>();
 
         PortalOpen();
         player.gameObject.SetActive(false);
@@ -48,22 +47,9 @@ public class PortalTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player") && SceneStateManager.currentGameStates != GameStates.Winscreen)
         {
+            PortalClose();
             player.gameObject.SetActive(false);
-            StartCoroutine(LoadNextLevelDelay());
         }
-    }
-
-    IEnumerator LoadNextLevelDelay()
-    {
-        yield return new WaitForSeconds(0.3f);
-        PortalClose();
-        ChangeScene();
-    }
-    
-    IEnumerator PortalOpenDelay()
-    {
-        yield return new WaitForSeconds(0.3f);
-        PortalIdle();
     }
 
     public void ChangeScene()
@@ -107,12 +93,14 @@ public class PortalTrigger : MonoBehaviour
             if (!is3D)
             {
                 portalCollider2D.enabled = true;
-                animator.SetBool("PortalIdle", true);
             }
             else
             {
                 portalCollider.enabled = true;
+                print("Portal Idle");
             }
+            animator.SetBool("PortalIdle", true);
+            animator.SetBool("PortalClose", false);
             player.gameObject.SetActive(true);
         }
         else
@@ -126,40 +114,23 @@ public class PortalTrigger : MonoBehaviour
 
     public void PortalOpen()
     {
-        if (!is3D)
+        if (is3D)
         {
-            animator.SetBool("PortalClose", false);
-            animator.SetBool("PortalIdle", false);
-        }
-        else
-        {
-            portalMesh.SetActive(true);
             portalEffect.Play();
-            StartCoroutine(PortalOpenDelay());
         }
+        animator.SetBool("PortalClose", false);
+        animator.SetBool("PortalIdle", false);
         portalOpenSound.Play();
     }
 
     public void PortalClose()
     {
-        if (!is3D)
+        if (is3D)
         {
-            animator.SetBool("PortalClose", true);
-            animator.SetBool("PortalIdle", false);  
-        }
-        else
-        {
-            portalMesh.SetActive(false);
             portalEffect.Stop();
         }
+        animator.SetBool("PortalClose", true);
+        animator.SetBool("PortalIdle", false);  
         portalCloseSound.Play();
-    }
-
-    public void OpenPortal3D()
-    {
-        if (!portalMesh.activeSelf)
-        {
-            PortalOpen();
-        }
     }
 }
