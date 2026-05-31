@@ -38,6 +38,44 @@ public class TrashBase : MonoBehaviour
         FloatTrashInGround();
     }
 
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // When player collides with trash, move the trash away from the player
+            if (transform.position.y < player.transform.position.y - 2f)
+            {
+                if (transform.position.x < player.transform.position.x)
+                {
+                    rb2D.linearVelocity = Vector2.left * 5f;
+                }
+                else
+                {
+                    rb2D.linearVelocity = Vector2.right * 5f;
+                }
+            }
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // When player collides with trash, move the trash away from the player
+            if (transform.position.y < player.transform.position.y - 2f)
+            {
+                if (transform.position.x < player.transform.position.x)
+                {
+                    rb.linearVelocity = Vector3.left * 5f;
+                }
+                else
+                {
+                    rb.linearVelocity = Vector3.right * 5f;
+                }
+            }
+        }
+    }
+
     private void FloatTrashInGround()
     {
         if (SceneStateManager.currentGameStates == GameStates.Level1)
@@ -128,7 +166,9 @@ public class TrashBase : MonoBehaviour
         }
         else if (rb != null)
         {
-            rb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+            // print(new Vector3(1, 1, 0f) * shootForce);
+            // rb.AddForce(new Vector3(1, 1, 0f) * shootForce, ForceMode.Impulse);
+            rb.linearVelocity = new Vector3(shootDir.x, shootDir.y, 0f) * (shootForce+10f);
         }
     }
 

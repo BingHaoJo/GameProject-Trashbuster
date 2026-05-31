@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
         if (gameObject.GetComponent<Rigidbody>() != null)
         {
             rb = gameObject.GetComponent<Rigidbody>();
+            jumpForce = 7f;
             is3D = true;
         }
         else if (gameObject.GetComponent<Rigidbody2D>() != null)
@@ -186,12 +187,16 @@ public class PlayerController : MonoBehaviour
             case PlayerStates.Idle:
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isFalling", false);
+                animator.SetBool("isJumping", false);
+                animator.SetBool("isPushUp", false);
                 break;
             case PlayerStates.Walking:
                 if (IsGrounded())
                 {
                     animator.SetBool("isWalking", true);
                     animator.SetBool("isFalling", false);
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isPushUp", false);
                     if (!isDusting)
                     {
                         stepDust.Play();
