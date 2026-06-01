@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-
 enum PlayerStates
 {
     Idle,
@@ -17,29 +16,51 @@ enum PlayerStates
 
 public class PlayerController : MonoBehaviour
 {
+    // Movement var
     private float walkSpeed = 13f;
     private float jumpForce = 14f;
-    [Header("Referencing")]
+
+    // Coyote time var
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter = 0f;
+
+    // Jump buffer var
+    private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter = 0f;
+
+    //Rigidbodies
     private Rigidbody2D rb2D;
     private Rigidbody rb;
-    [SerializeField] private VacuumGunController vacuumGunController;
-    [SerializeField] private Animator animator;
+
+    // Ground check var
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private InputActionAsset playerInput;
-    [SerializeField] private AudioClip jumpAudio;
-    [SerializeField] private ParticleSystem stepDust;
-    [SerializeField] private bool ControlsDisabled = false;
-    private bool is3D = false;
-    private AudioSource walkAUSource;
     private float groundCheckAngle = 0f;
     private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
-    private bool keepMomentum = false;
+
+    //Audio var
+    [SerializeField] private AudioClip jumpAudio;
+    private AudioSource walkAUSource;
+
+    // Player input
+    [SerializeField] private InputActionAsset playerInput;
     private InputAction moveAction;
     private InputAction jumpAction;
-    private PlayerStates currentState = PlayerStates.Idle;
     private Vector2 moveInput;
+
+    // Referencing var
+    [SerializeField] private VacuumGunController vacuumGunController;
+    [SerializeField] private Animator animator;
+    [SerializeField] private ParticleSystem stepDust;
+
+    // Boolean var
+    [SerializeField] private bool ControlsDisabled = false;
+    private bool is3D = false;
     private bool isDusting = false;
+    private bool keepMomentum = false;
+
+    // State var
+    private PlayerStates currentState = PlayerStates.Idle;
     
     void OnEnable()
     {
@@ -95,6 +116,26 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(AllowIdle());
         }
 
+        // CoyoteTime
+        if (IsGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        // Jump buffer
+        if (jumpAction.IsPressed())
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
         // print("Current State: " + currentState);
     }
 
@@ -123,61 +164,6 @@ public class PlayerController : MonoBehaviour
         else if(walkAUSource.isPlaying && currentState != PlayerStates.Walking)
         {
             walkAUSource.Stop();
-        }
-    }
-
-    private bool IsGrounded()
-    {
-        if (is3D)
-        {
-            return Physics.CheckBox(groundCheck.position, (Vector3)groundCheckSize / 2f, Quaternion.Euler(0f, 0f, groundCheckAngle), groundLayer);
-        }
-        else
-        {
-            return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
-        }
-    }
-
-    private bool IsIdle()
-    {
-        return (IsGrounded() && currentState != PlayerStates.Jumping && currentState != PlayerStates.ForcePushedUp) ? true : false;
-    }
-
-    private IEnumerator AllowIdle() // to transition to idle state after being force pushed whilst grounded
-    {
-        yield return new WaitForSeconds(0.2f);
-        currentState = PlayerStates.Idle;
-    }
-
-    private void Jump()
-    {
-        currentState = PlayerStates.Jumping;
-        if (is3D)
-        {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-        }
-        else
-        {
-            rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
-        }
-        AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
-    }
-
-    private void Fall()
-    {
-        if (is3D)
-        {
-            if (rb.linearVelocity.y < 0f && !IsGrounded())
-            {
-                currentState = PlayerStates.Falling;
-            }
-        }
-        else
-        {
-            if (rb2D.linearVelocityY < 0f && !IsGrounded())
-            {
-                currentState = PlayerStates.Falling;
-            }
         }
     }
     private void StateFunction()
@@ -227,6 +213,46 @@ public class PlayerController : MonoBehaviour
     private void StateTransistion()
     {
         // Moving on X axis
+        XAxisMove();
+
+        // Stationery
+        Idle();
+
+        // Jumping
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        {
+            Jump();
+        }
+
+        // Falling
+        Fall();
+    }
+
+    private bool IsGrounded()
+    {
+        if (is3D)
+        {
+            return Physics.CheckBox(groundCheck.position, (Vector3)groundCheckSize / 2f, Quaternion.Euler(0f, 0f, groundCheckAngle), groundLayer);
+        }
+        else
+        {
+            return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
+        }
+    }
+
+    private bool TouchingGround() // to make sure that the player won't be set as grounded when jumping or pushed up
+    {
+        return (IsGrounded() && currentState != PlayerStates.Jumping && currentState != PlayerStates.ForcePushedUp) ? true : false;
+    }
+
+    private IEnumerator AllowIdle() // to transition to idle state after being force pushed whilst grounded
+    {
+        yield return new WaitForSeconds(0.2f);
+        currentState = PlayerStates.Idle;
+    }
+
+    private void XAxisMove()
+    {
         if (moveInput.x != 0f && IsGrounded())
         {
             if (is3D)
@@ -252,9 +278,11 @@ public class PlayerController : MonoBehaviour
             }
             keepMomentum = false;
         }
+    }
 
-        // Stationery
-        if(moveInput.x == 0f && IsIdle())
+    private void Idle()
+    {
+        if(moveInput.x == 0f && IsGrounded())
         {
             if (is3D)
             {
@@ -267,7 +295,7 @@ public class PlayerController : MonoBehaviour
             currentState = PlayerStates.Idle;
             keepMomentum = false;            
         }
-        else if (moveInput.x == 0f && !IsIdle() && !keepMomentum)
+        else if (moveInput.x == 0f && !IsGrounded() && !keepMomentum)
         {
             if (is3D)
             {
@@ -278,16 +306,41 @@ public class PlayerController : MonoBehaviour
                 rb2D.linearVelocity = new Vector2(0f, rb2D.linearVelocityY);
             }
         }
-
-        // Jumping
-        if (jumpAction.IsPressed() && IsGrounded())
-        {
-            Jump();
-        }
-
-        // Falling
-        Fall();
     }
+    private void Jump()
+    {
+        currentState = PlayerStates.Jumping;
+        coyoteTimeCounter = 0f;
+        jumpBufferCounter = 0f;
+        if (is3D)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+        }
+        else
+        {
+            rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
+        }
+        AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
+    }
+
+    private void Fall()
+    {
+        if (is3D)
+        {
+            if (rb.linearVelocity.y < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
+        }
+        else
+        {
+            if (rb2D.linearVelocityY < 0f && !IsGrounded())
+            {
+                currentState = PlayerStates.Falling;
+            }
+        }
+    }
+    
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {
         currentState = PlayerStates.ForcePushedUp;
