@@ -50,6 +50,7 @@ public class VacuumGunController : MonoBehaviour
     private float shootCooldown = 0.1f;
     #endregion
 
+    [SerializeField] private ParticleSystem pushEffect;
     public event Action<Vector2> mousePositionUpdated;
     private Camera mainCamera;
     private PlayerController player;
@@ -244,6 +245,7 @@ public class VacuumGunController : MonoBehaviour
         Vector2 pushDir = (worldPos - player.transform.position).normalized;
         player.ApplyPushForce(-pushForce, pushDir);
         canPush = false;
+        pushEffect.Play();
         pushAudio.Play();
         StartCoroutine(PushCooldown());
     }

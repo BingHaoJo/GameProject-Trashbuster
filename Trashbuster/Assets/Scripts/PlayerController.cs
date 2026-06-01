@@ -51,7 +51,8 @@ public class PlayerController : MonoBehaviour
     // Referencing var
     [SerializeField] private VacuumGunController vacuumGunController;
     [SerializeField] private Animator animator;
-    [SerializeField] private ParticleSystem stepDust;
+    [SerializeField] private ParticleSystem walkDust;
+    [SerializeField] private ParticleSystem jumpDust;
 
     // Boolean var
     [SerializeField] private bool ControlsDisabled = false;
@@ -93,7 +94,7 @@ public class PlayerController : MonoBehaviour
         if (gameObject.GetComponent<Rigidbody>() != null)
         {
             rb = gameObject.GetComponent<Rigidbody>();
-            jumpForce = 7f;
+            jumpForce = 10f;
             is3D = true;
         }
         else if (gameObject.GetComponent<Rigidbody2D>() != null)
@@ -111,10 +112,10 @@ public class PlayerController : MonoBehaviour
         StateTransistion();
 
         // If player airboost while on the ground, start the coroutine to Idle state. Needs per-frame check.
-        if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
-        {
-            StartCoroutine(AllowIdle());
-        }
+        // if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
+        // {
+        //     StartCoroutine(AllowIdle());
+        // }
 
         // CoyoteTime
         if (IsGrounded())
@@ -127,7 +128,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Jump buffer
-        if (jumpAction.IsPressed())
+        if (jumpAction.IsPressed() || InputSystem.actions.FindAction("Push").IsPressed())
         {
             jumpBufferCounter = jumpBufferTime;
         }
@@ -150,9 +151,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // Stop dust particle
-        if (stepDust.isPlaying && currentState != PlayerStates.Walking && isDusting)
+        if (walkDust.isPlaying && isDusting && currentState != PlayerStates.Walking)
         {
-            stepDust.Stop();
+            walkDust.Stop();
             isDusting = false;
         }
 
@@ -185,7 +186,7 @@ public class PlayerController : MonoBehaviour
                     animator.SetBool("isPushUp", false);
                     if (!isDusting)
                     {
-                        stepDust.Play();
+                        walkDust.Play();
                         isDusting = true;
                     }
                 }
@@ -219,7 +220,7 @@ public class PlayerController : MonoBehaviour
         Idle();
 
         // Jumping
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && jumpAction.IsPressed())
         {
             Jump();
         }
@@ -282,7 +283,7 @@ public class PlayerController : MonoBehaviour
 
     private void Idle()
     {
-        if(moveInput.x == 0f && IsGrounded())
+        if(moveInput.x == 0f && TouchingGround())
         {
             if (is3D)
             {
@@ -295,7 +296,7 @@ public class PlayerController : MonoBehaviour
             currentState = PlayerStates.Idle;
             keepMomentum = false;            
         }
-        else if (moveInput.x == 0f && !IsGrounded() && !keepMomentum)
+        else if (moveInput.x == 0f && !TouchingGround() && !keepMomentum)
         {
             if (is3D)
             {
@@ -321,6 +322,7 @@ public class PlayerController : MonoBehaviour
             rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
         }
         AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
+        jumpDust.Play();
     }
 
     private void Fall()
@@ -344,6 +346,7 @@ public class PlayerController : MonoBehaviour
     public void ApplyPushForce(float pushForce, Vector2 pushDir)
     {
         currentState = PlayerStates.ForcePushedUp;
+        jumpBufferCounter = 0f; // reset jump buffer to prevent jump buffering during push up
         if (is3D)
         {
             rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
