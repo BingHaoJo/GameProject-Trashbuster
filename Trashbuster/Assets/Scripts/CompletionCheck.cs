@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CompletionCheck : MonoBehaviour
@@ -9,7 +10,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private PortalTrigger portal;
     [SerializeField] private TrashBinBase[] trashBins;
     [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text trashLeftText;
+    [SerializeField] private Image trashLeftProgress;
     [SerializeField] private int completionThreshold = 3;
     [SerializeField] private GameObject trash;
     [SerializeField] private bool isManualThreshold;
@@ -46,7 +47,7 @@ public class CompletionCheck : MonoBehaviour
         scoreText.text = "Trash Score: " + GlobalVar.trashScore.ToString();
 
         // Update trash left
-        trashLeftText.text = "Trash left: " + (completionThreshold - currentTrashCount).ToString();
+        trashLeftProgress.fillAmount = (float)currentTrashCount / completionThreshold;
 
         // Check Completion Progress
         if (currentTrashCount >= completionThreshold)

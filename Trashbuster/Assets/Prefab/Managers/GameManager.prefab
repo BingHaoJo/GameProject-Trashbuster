@@ -48,9 +48,14 @@ MonoBehaviour:
   portal: {fileID: 0}
   trashBins:
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   scoreText: {fileID: 0}
+  trashLeftProgress: {fileID: 0}
   completionThreshold: 3
   trash: {fileID: 0}
+  isManualThreshold: 0
 --- !u!82 &6998972500267230178
 AudioSource:
   m_ObjectHideFlags: 0
@@ -62,7 +67,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: c2f3cb9b7293b464bb7d01291e4f865f, type: 3}
+  m_Resource: {fileID: 8300000, guid: de3b8c0fdaa4cfd44b5b5b566d07e02f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.2
   m_Pitch: 1
