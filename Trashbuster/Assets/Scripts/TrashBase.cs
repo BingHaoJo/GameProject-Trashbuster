@@ -20,7 +20,7 @@ public class TrashBase : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindWithTag("Player");
 
         if (GetComponent<Rigidbody2D>() != null)
         {
@@ -43,9 +43,9 @@ public class TrashBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             // When player collides with trash, move the trash away from the player
-            if (transform.position.y < player.transform.position.y - 2f)
+            if (transform.position.y < collision.transform.position.y - 2f)
             {
-                if (transform.position.x < player.transform.position.x)
+                if (transform.position.x < collision.transform.position.x)
                 {
                     rb2D.linearVelocity = Vector2.left * 5f;
                 }
@@ -62,9 +62,9 @@ public class TrashBase : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             // When player collides with trash, move the trash away from the player
-            if (transform.position.y < player.transform.position.y - 2f)
+            if (transform.position.y < collision.transform.position.y - 2f)
             {
-                if (transform.position.x < player.transform.position.x)
+                if (transform.position.x < collision.transform.position.x)
                 {
                     rb.linearVelocity = Vector3.left * 5f;
                 }

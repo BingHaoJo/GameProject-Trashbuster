@@ -25393,6 +25393,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2136842284}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
+      propertyPath: isManualThreshold
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
       propertyPath: trashLeftProgress
       value: 
       objectReference: {fileID: 1739499555}

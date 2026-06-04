@@ -77,6 +77,11 @@ public class VacuumGunController : MonoBehaviour
         trashSlots = new List<Queue<TrashBase>> { trashSlot1, trashSlot2, trashSlot3, trashSlot4 };
 
         currentSlot = trashSlots[0]; // default to first slot
+
+        if (gameObject.GetComponent<BoxCollider>() != null)
+        {
+            pushForce = 20f;
+        }
     }
 
     // Update is called once per frame
@@ -240,8 +245,7 @@ public class VacuumGunController : MonoBehaviour
 
     private void TriggerPush()
     {
-        // Apply Push Force to push player  
-        print("Pushed up!");        
+        // Apply Push Force to push player        
         Vector2 pushDir = (worldPos - player.transform.position).normalized;
         player.ApplyPushForce(-pushForce, pushDir);
         canPush = false;
@@ -325,14 +329,12 @@ public class VacuumGunController : MonoBehaviour
     private IEnumerator PushCooldown()
     {
         yield return new WaitForSeconds(pushCooldown);
-        print("Push ready!");
         canPush = true;
     }
 
     private IEnumerator ShootCooldown()
     {
         yield return new WaitForSeconds(shootCooldown);
-        print("Shoot ready!");
         canShoot = true;
     }
 

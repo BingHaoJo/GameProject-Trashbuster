@@ -97,7 +97,6 @@ public class PortalTrigger : MonoBehaviour
             else
             {
                 portalCollider.enabled = true;
-                print("Portal Idle");
             }
             animator.SetBool("PortalIdle", true);
             animator.SetBool("PortalClose", false);
