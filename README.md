@@ -27,11 +27,12 @@ Assets from online sources:
 - Paper ball, glass bottle, plastic bag: https://0-mem0ry.itch.io
 - BGM & SFX: https://pixabay.com/users/freesound_community-46691455/
 - Jump SFX: https://simon-develop.itch.io
+- 3D blocks: https://kaylousberg.itch.io
 
 How to reset progress:
 Reload the page
 
-Completed requirements:
+Completed requirements for assessment 2:
 - Game states: SceneStatesManager
 - Levels: 3 Levels
 - Points and Heads-Up Display: Hotbar, air boost cooldown, points
@@ -39,3 +40,15 @@ Completed requirements:
 - At least three modular system - AudioManager, Game manager, Menu manager, OnMousePositionUpdated, OnTrashCollected, OnTrashDeposited
 - Animation and feedback - Animation and sound effects available
 - Use of mix assets - Check credits
+
+2D improvement for assessment 3:
+- Game feel & feedback: Coyote time, jump buffer, walking and jumping dust particle, air boost particle
+- Balancing/ two key value from ScriptableObjects or data files: Trash score, bgm mute, current level
+- Hud: Trash progress bar, BGM mute icon
+3D level:
+- 3D player model
+- 3D platforms
+- 3D portal
+- 3D vacuum gun
+- 3D trash bin
+- 3D aluminium can
