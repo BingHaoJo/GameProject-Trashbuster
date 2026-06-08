@@ -45,6 +45,7 @@ Completed requirements for assessment 2:
 - Game feel & feedback: Coyote time, jump buffer, walking and jumping dust particle, air boost particle
 - Balancing/ two key value from ScriptableObjects or data files: Trash score, bgm mute, current level
 - Hud: Trash progress bar, BGM mute icon
+
 3D level:
 - 3D player model
 - 3D platforms
