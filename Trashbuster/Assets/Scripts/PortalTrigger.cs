@@ -15,7 +15,7 @@ public class PortalTrigger : MonoBehaviour
     public bool is3D = false;
     public bool nextLevel = false;
 
-    void Start()
+    void OnEnable()
     {
         if (gameObject.GetComponent<CapsuleCollider2D>() != null)
         {
@@ -29,8 +29,12 @@ public class PortalTrigger : MonoBehaviour
             is3D = true;
         }
         animator = gameObject.GetComponent<Animator>();
-
+        
         PortalOpen();
+    }
+
+    void Start()
+    {
         player.gameObject.SetActive(false);
     }
 

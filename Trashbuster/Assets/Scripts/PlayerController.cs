@@ -22,11 +22,11 @@ public class PlayerController : MonoBehaviour
     private float jumpForce = 14f;
 
     // Coyote time var
-    private float coyoteTime = 0.1f;
+    private float coyoteTime = 0.2f;
     private float coyoteTimeCounter = 0f;
 
     // Jump buffer var
-    private float jumpBufferTime = 0.1f;
+    private float jumpBufferTime = 0.2f;
     private float jumpBufferCounter = 0f;
 
     //Rigidbodies
@@ -41,7 +41,8 @@ public class PlayerController : MonoBehaviour
 
     //Audio var
     [SerializeField] private AudioClip jumpAudio;
-    private AudioSource walkAUSource;
+    [SerializeField] private AudioClip walkAudio;
+    private AudioSource playerAudioSource;
 
     // Player input
     [SerializeField] private InputActionAsset playerInput;
@@ -80,7 +81,7 @@ public class PlayerController : MonoBehaviour
         // Input actions
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
-        walkAUSource = gameObject.GetComponent<AudioSource>();
+        playerAudioSource = gameObject.GetComponent<AudioSource>();
 
         // Disables player controls
         if (ControlsDisabled)
@@ -111,6 +112,8 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = moveAction.ReadValue<Vector2>();
 
+        StateTransistion();
+
         // If player airboost while on the ground, start the coroutine to Idle state. Needs per-frame check.
         // if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
         // {
@@ -133,9 +136,14 @@ public class PlayerController : MonoBehaviour
             }
         };
 
+        jumpAction.canceled += context =>
+        {
+            jumpPressed = false;
+        };
+
 
         // CoyoteTime
-        if (IsGrounded())
+        if (IsGrounded() && currentState != PlayerStates.Jumping && currentState != PlayerStates.ForcePushedUp)
         {
             coyoteTimeCounter = coyoteTime;
         }
@@ -154,14 +162,22 @@ public class PlayerController : MonoBehaviour
             jumpBufferCounter -= Time.deltaTime;
         }
 
-        StateTransistion();
+        if (!playerAudioSource.isPlaying && currentState == PlayerStates.Walking)// Play walking sound
+        {
+            playerAudioSource.clip = walkAudio;
+            playerAudioSource.Play();
+        }
+        if(playerAudioSource.isPlaying && currentState != PlayerStates.Walking && currentState != PlayerStates.Jumping) // Stop walking sound
+        {
+            playerAudioSource.Stop();
+        }
 
         // print("Current State: " + currentState);
     }
 
     private void FixedUpdate()
     {
-        StateFunction();
+        StateAnimation();
 
         // Disable stopping momentum mid air
         if (InputSystem.actions.FindAction("Push").IsPressed())
@@ -175,18 +191,8 @@ public class PlayerController : MonoBehaviour
             walkDust.Stop();
             isDusting = false;
         }
-
-        // Playing walking sound
-        if (!walkAUSource.isPlaying && currentState == PlayerStates.Walking)
-        {
-            walkAUSource.Play();
-        }
-        else if(walkAUSource.isPlaying && currentState != PlayerStates.Walking)
-        {
-            walkAUSource.Stop();
-        }
     }
-    private void StateFunction()
+    private void StateAnimation()
     {
         switch (currentState)
         {
@@ -273,7 +279,7 @@ public class PlayerController : MonoBehaviour
 
     private void XAxisMove()
     {
-        if (moveInput.x != 0f && IsGrounded())
+        if (moveInput.x != 0f && TouchingGround())
         {
             if (is3D)
             {
@@ -341,7 +347,8 @@ public class PlayerController : MonoBehaviour
         {
             rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, jumpForce);
         }
-        AudioManager.Instance.PlaySfx(jumpAudio, 0.3f);
+        playerAudioSource.clip = jumpAudio;
+        playerAudioSource.Play();
         jumpDust.Play();
     }
 

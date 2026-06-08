@@ -48,10 +48,8 @@ MonoBehaviour:
   portal: {fileID: 0}
   trashBins:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   scoreText: {fileID: 0}
+  levelText: {fileID: 0}
   trashLeftProgress: {fileID: 0}
   completionThreshold: 3
   trash: {fileID: 0}

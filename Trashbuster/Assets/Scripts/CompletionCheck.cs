@@ -11,6 +11,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private PortalTrigger portal;
     [SerializeField] private TrashBinBase[] trashBins;
     [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text levelText;
     [SerializeField] private Image trashLeftProgress;
     [SerializeField] private int completionThreshold = 3;
     [SerializeField] private GameObject trash;
@@ -57,6 +58,9 @@ public class CompletionCheck : MonoBehaviour
     {
         // Update trash score display
         scoreText.text = "Trash Score: " + GlobalVar.trashScore.ToString();
+
+        // Update level display
+        levelText.text = SceneStateManager.currentGameStates.ToString();
 
         // Update trash left
         trashLeftProgress.fillAmount = (float)currentTrashCount / completionThreshold;

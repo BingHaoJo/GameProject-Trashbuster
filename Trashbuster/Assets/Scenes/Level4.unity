@@ -14971,21 +14971,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5595205401003052193}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
+      propertyPath: levelText
+      value: 
+      objectReference: {fileID: 1533572465}
+    - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
       propertyPath: scoreText
       value: 
       objectReference: {fileID: 2095748280}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
-      propertyPath: trashLeftText
-      value: 
-      objectReference: {fileID: 1533572465}
+      propertyPath: isManualThreshold
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
       propertyPath: trashLeftProgress
       value: 
       objectReference: {fileID: 2021277036}
-    - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
-      propertyPath: trashBins.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 765141261618713814, guid: ac050bcac4dbf0c468d7e25caa8a2cb5, type: 3}
       propertyPath: 'trashBins.Array.data[0]'
       value: 
@@ -16140,7 +16140,7 @@ GameObject:
   - component: {fileID: 1533572466}
   - component: {fileID: 1533572465}
   m_Layer: 0
-  m_Name: TrashLeftText
+  m_Name: LevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
