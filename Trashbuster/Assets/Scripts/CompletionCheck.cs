@@ -3,6 +3,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class CompletionCheck : MonoBehaviour
@@ -14,6 +15,7 @@ public class CompletionCheck : MonoBehaviour
     [SerializeField] private int completionThreshold = 3;
     [SerializeField] private GameObject trash;
     [SerializeField] private bool isManualThreshold;
+    private AudioSource bgmSource;
     private int currentTrashCount = 0;
 
     void OnEnable()
@@ -21,6 +23,14 @@ public class CompletionCheck : MonoBehaviour
         foreach(TrashBinBase bin in trashBins)
         {
             bin.OnTrashDeposited += OnTrashDeposited;
+        }
+    }
+
+    void OnDisable()
+    {
+        foreach(TrashBinBase bin in trashBins)
+        {
+            bin.OnTrashDeposited -= OnTrashDeposited;
         }
     }
 
@@ -38,6 +48,8 @@ public class CompletionCheck : MonoBehaviour
                 break;
             }
         }
+
+        bgmSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -55,7 +67,14 @@ public class CompletionCheck : MonoBehaviour
             portal.gameObject.SetActive(true);
             portal.nextLevel = true;
         }
+        
+        ToggleVolume();
 
+    }
+
+    private void ToggleVolume()
+    {
+        bgmSource.mute = GlobalVar.bgmMuted;
     }
 
     private void OnTrashDeposited()

@@ -4,4 +4,5 @@ using UnityEngine;
 public class GlobalVar : ScriptableObject
 {
     public static int trashScore = 0;
+    public static bool bgmMuted = false;
 }

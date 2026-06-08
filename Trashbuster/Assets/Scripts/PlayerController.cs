@@ -3,6 +3,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 using UnityEngine.SceneManagement;
 
 enum PlayerStates
@@ -21,11 +22,11 @@ public class PlayerController : MonoBehaviour
     private float jumpForce = 14f;
 
     // Coyote time var
-    private float coyoteTime = 0.2f;
+    private float coyoteTime = 0.1f;
     private float coyoteTimeCounter = 0f;
 
     // Jump buffer var
-    private float jumpBufferTime = 0.2f;
+    private float jumpBufferTime = 0.1f;
     private float jumpBufferCounter = 0f;
 
     //Rigidbodies
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private InputAction moveAction;
     private InputAction jumpAction;
     private Vector2 moveInput;
+    private bool jumpPressed = false;
 
     // Referencing var
     [SerializeField] private VacuumGunController vacuumGunController;
@@ -109,13 +111,28 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = moveAction.ReadValue<Vector2>();
 
-        StateTransistion();
-
         // If player airboost while on the ground, start the coroutine to Idle state. Needs per-frame check.
         // if (currentState == PlayerStates.ForcePushedUp && IsGrounded())
         // {
         //     StartCoroutine(AllowIdle());
         // }
+
+        jumpAction.started += context => // When jump is pressed, let player jump. Jump won't be counted as pressed after pressed.
+        {
+            if (context.interaction is TapInteraction)
+            {
+                jumpPressed = true;
+            }
+        };
+
+        jumpAction.performed += context => // Even if the jump is tapped, the jump won't be counted as pressed.
+        {
+            if (context.interaction is TapInteraction)
+            {
+                jumpPressed = false;
+            }
+        };
+
 
         // CoyoteTime
         if (IsGrounded())
@@ -128,7 +145,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Jump buffer
-        if (jumpAction.IsPressed() || InputSystem.actions.FindAction("Push").IsPressed())
+        if (jumpPressed || InputSystem.actions.FindAction("Push").IsPressed())
         {
             jumpBufferCounter = jumpBufferTime;
         }
@@ -136,6 +153,8 @@ public class PlayerController : MonoBehaviour
         {
             jumpBufferCounter -= Time.deltaTime;
         }
+
+        StateTransistion();
 
         // print("Current State: " + currentState);
     }
@@ -220,7 +239,7 @@ public class PlayerController : MonoBehaviour
         Idle();
 
         // Jumping
-        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && jumpAction.IsPressed())
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f && jumpPressed)
         {
             Jump();
         }
@@ -313,6 +332,7 @@ public class PlayerController : MonoBehaviour
         currentState = PlayerStates.Jumping;
         coyoteTimeCounter = 0f;
         jumpBufferCounter = 0f;
+        jumpPressed = false;
         if (is3D)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);

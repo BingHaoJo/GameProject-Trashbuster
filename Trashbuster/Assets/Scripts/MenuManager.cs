@@ -8,6 +8,7 @@ public class MenuManager : MonoBehaviour
     private GameObject MainMenuUI;
     private GameObject LevelSelectUI;
     private GameObject CreditsUI;
+    private AudioSource bgmSource;
     
     void Start()
     {
@@ -19,6 +20,8 @@ public class MenuManager : MonoBehaviour
                 break;
             }
         }
+
+        bgmSource = GetComponent<AudioSource>();
 
         if (GameObject.Find("MainMenuUI") != null)
         {
@@ -60,6 +63,13 @@ public class MenuManager : MonoBehaviour
                 GameObject.Find("Level4Button").GetComponent<UnityEngine.UI.Button>().interactable = true;
             }
         }
+
+        ToggleVolume();
+    }
+
+    private void ToggleVolume()
+    {
+        bgmSource.mute = GlobalVar.bgmMuted;
     }
 
     public void PlayButtonFunction()
