@@ -85,6 +85,5 @@ public class CompletionCheck : MonoBehaviour
     {
         currentTrashCount++;
         GlobalVar.trashScore++;
-        
     }
 }
