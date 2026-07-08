@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     private float groundCheckAngle = 0f;
-    private Vector2 groundCheckSize = new Vector2(0.12f, 0.05f);
+    [SerializeField] private Vector3 groundCheckSize = new Vector3(1.72f, 0.05f, 0.12f);
 
     //Audio var
     [SerializeField] private AudioClip jumpAudio;
@@ -254,15 +254,25 @@ public class PlayerController : MonoBehaviour
         Fall();
     }
 
+    // This shows the box inside your Scene View
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        // Calculate the world position of the box check
+        Vector3 checkPosition = transform.position + groundCheckSize;
+        Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);   
+        
+    }
     private bool IsGrounded()
     {
         if (is3D)
         {
-            return Physics.CheckBox(groundCheck.position, (Vector3)groundCheckSize / 2f, Quaternion.Euler(0f, 0f, groundCheckAngle), groundLayer);
+            // VisualizeBox.DisplayBox(groundCheck.position, groundCheckSize / 2f, Quaternion.identity, 0f);
+            return Physics.CheckBox(groundCheck.position, groundCheckSize / 2f, Quaternion.identity, groundLayer);
         }
         else
         {
-            return Physics2D.OverlapBox(groundCheck.position, groundCheckSize, groundCheckAngle, groundLayer);
+            return Physics2D.OverlapBox(groundCheck.position, (Vector2)groundCheckSize, groundCheckAngle, groundLayer);
         }
     }
 
@@ -356,6 +366,7 @@ public class PlayerController : MonoBehaviour
     {
         if (is3D)
         {
+            print(rb.linearVelocity.y);
             if (rb.linearVelocity.y < 0f && !IsGrounded())
             {
                 currentState = PlayerStates.Falling;
@@ -363,6 +374,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            print(rb2D.linearVelocity);
             if (rb2D.linearVelocityY < 0f && !IsGrounded())
             {
                 currentState = PlayerStates.Falling;

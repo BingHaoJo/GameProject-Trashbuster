@@ -57,7 +57,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  groundCheckSize: {x: 1.41, y: 0.05, z: 0.93}
   jumpAudio: {fileID: 8300000, guid: 78aecc71b529b6b4897f97da34f1352a, type: 3}
+  walkAudio: {fileID: 8300000, guid: 258804ad155cd064d823bec9321e6853, type: 3}
   playerInput: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   vacuumGunController: {fileID: 5463300565195020803}
   animator: {fileID: 1233712596843733728}
@@ -291,7 +293,7 @@ Transform:
   m_GameObject: {fileID: 1649456187397400375}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.799, z: 0}
+  m_LocalPosition: {x: -0.081, y: -1.485, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []

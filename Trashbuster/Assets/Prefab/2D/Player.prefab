@@ -211,6 +211,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  groundCheckSize: {x: 1.88, y: 0.05, z: 0.12}
   jumpAudio: {fileID: 8300000, guid: 78aecc71b529b6b4897f97da34f1352a, type: 3}
   walkAudio: {fileID: 8300000, guid: 258804ad155cd064d823bec9321e6853, type: 3}
   playerInput: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
@@ -5177,7 +5178,7 @@ Transform:
   m_GameObject: {fileID: 4387450820038344513}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.18, z: 0}
+  m_LocalPosition: {x: 0.032, y: -1.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
